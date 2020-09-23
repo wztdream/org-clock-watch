@@ -31,17 +31,22 @@
   :group 'org-clock-alarm
   :type 'integer)
 
-(defun org-clock-overtime-action (id key)
+(defcustom org-clock-alarm-overtime-notify-interval 3
+  "over this minutes, will show over time notify"
+  :group 'org-clock-alarm
+  :type 'integer)
+
+(defun org-clock-alarm-overtime-action (id key)
   (when (equal key "ok")
-    (org-clock-alarm-stop)
-    )
+    (org-clock-alarm-stop))
   )
 
-(defun org-clock-overtime-notify()
+(defun org-clock-alarm-overtime-notify()
   "show alarm when over time"
   (let ((overred-time (- (org-clock-get-clocked-time) org-clock-alarm-threshold)))
    (when (and
          (>= overred-time 0)
+         (zerop (mod overred-time org-clock-alarm-overtime-notify-interval))
          (time-less-p (org-x11-idle-seconds) '(0 180 0 0))) ;; only alarm once if idle
     (notifications-notify
      :title "OVERTIME"
@@ -57,7 +62,7 @@
   (interactive)
   (org-clock-in)
   (unless org-clock-alarm-timmer
-    (setq org-clock-alarm-timmer (run-with-timer t 10 'org-clock-overtime-notify))
+    (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-overtime-notify))
     )
   (setq org-clock-alarm-state :on)
   )
