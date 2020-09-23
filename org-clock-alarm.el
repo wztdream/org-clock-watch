@@ -21,7 +21,7 @@
 
 (defcustom org-clock-alarm-overtime-icon (when load-file-name
                                         (concat (file-name-directory load-file-name)
-                                                "resources/beach.SVN"))
+                                                "resources/beach.svg"))
   "The path to a sound file that´s to be played when a pomodoro was finished."
   :group 'org-clock-alarm
   :type 'file)
