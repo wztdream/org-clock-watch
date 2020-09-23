@@ -73,7 +73,7 @@
   (progn
     (org-clock-in)
     (unless org-clock-alarm-timmer
-      (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-overtime-notify)))
+      (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
     (setq org-clock-alarm-state t))
   )
 
