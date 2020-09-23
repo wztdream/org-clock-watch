@@ -26,8 +26,8 @@
   :group 'org-clock-alarm
   :type 'file)
 
-(defcustom org-clock-alarm-threshold 40
-  "over this minutes, will show over time notify"
+(defcustom org-clock-alarm-threshold (* 40 60)
+  "over this seconds, will show over time notify"
   :group 'org-clock-alarm
   :type 'integer)
 
@@ -43,7 +43,7 @@
 
 (defun org-clock-alarm-overtime-notify()
   "show alarm when over time"
-  (let ((overred-time (- (org-clock-get-clocked-time) org-clock-alarm-threshold)))
+  (let ((overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) org-clock-alarm-threshold)))
    (when (and
          (>= overred-time 0)
          (zerop (mod overred-time org-clock-alarm-overtime-notify-interval))
