@@ -38,7 +38,7 @@
 
 (defun org-clock-alarm-overtime-action (id key)
   (when (equal key "ok")
-    (org-clock-alarm-stop))
+    (org-clock-alarm))
   )
 
 (defun org-clock-alarm-overtime-notify()
