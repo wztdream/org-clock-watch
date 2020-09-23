@@ -9,7 +9,8 @@
 
 
 (defvar org-clock-alarm-timmer nil)
-
+(defvar org-clock-alarm-state :off
+  "alarm set or not")
 
 (defcustom org-clock-alarm-overtime-notify-sound (when load-file-name
                                       (concat (file-name-directory load-file-name)
@@ -57,6 +58,7 @@
   (unless org-clock-alarm-timmer
     (setq org-clock-alarm-timmer (run-with-timer t 10 'org-clock-overtime-notify))
     )
+  (setq org-clock-alarm-state :on)
   )
 (defun org-clock-alarm-stop ()
   "stop org clock alarm"
@@ -64,6 +66,7 @@
   (org-clock-out)
   (when org-clock-alarm-timmer
     (setq org-clock-alarm-timmer (cancel-timer org-clock-alarm-timmer)))
+  (setq org-clock-alarm-state :off)
   )
 
 (provide 'org-clock-alarm)
