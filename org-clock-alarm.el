@@ -62,19 +62,19 @@
   "turn on/off org clock alarm"
   (interactive)
   (if org-clock-alarm-on-p
-     ;; if on then turn off
-    (progn
-      (org-clock-out)
-      (when org-clock-alarm-timmer
-        (setq org-clock-alarm-timmer (cancel-timer org-clock-alarm-timmer)))
-      (setq org-clock-alarm-on-p nil)))
+      ;; if on then turn off
+      (progn
+        (org-clock-out)
+        (when org-clock-alarm-timmer
+          (setq org-clock-alarm-timmer (cancel-timer org-clock-alarm-timmer)))
+        (setq org-clock-alarm-on-p nil))
 
-  ;; if off then turn on
-  (progn
-    (org-clock-in)
-    (unless org-clock-alarm-timmer
-      (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
-    (setq org-clock-alarm-on-p t))
+    ;; if off then turn on
+    (progn
+      (org-clock-in)
+      (unless org-clock-alarm-timmer
+        (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
+      (setq org-clock-alarm-on-p t)))
   )
 
 (provide 'org-clock-alarm)
