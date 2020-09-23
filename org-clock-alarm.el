@@ -31,8 +31,8 @@
   :group 'org-clock-alarm
   :type 'integer)
 
-(defcustom org-clock-alarm-overtime-notify-interval 3
-  "over this minutes, will show over time notify"
+(defcustom org-clock-alarm-overtime-notify-interval 180
+  "over this seconds, will show over time notify"
   :group 'org-clock-alarm
   :type 'integer)
 
@@ -50,7 +50,7 @@
          (time-less-p (org-x11-idle-seconds) '(0 180 0 0))) ;; only alarm once if idle
     (notifications-notify
      :title "OVERTIME"
-     :body (format "over time <b>+%s</b>" overred-time)
+     :body (format "over time <b> +%s min</b>" (floor overred-time 60))
      :actions '("ok" "why not?")
      :on-action 'org-clock-alarm-overtime-action
      :app-icon org-clock-alarm-overtime-icon
