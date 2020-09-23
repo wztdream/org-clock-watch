@@ -67,14 +67,14 @@
       (org-clock-out)
       (when org-clock-alarm-timmer
         (setq org-clock-alarm-timmer (cancel-timer org-clock-alarm-timmer)))
-      (setq org-clock-alarm-state nil)))
+      (setq org-clock-alarm-on-p nil)))
 
   ;; if off then turn on
   (progn
     (org-clock-in)
     (unless org-clock-alarm-timmer
       (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
-    (setq org-clock-alarm-state t))
+    (setq org-clock-alarm-on-p t))
   )
 
 (provide 'org-clock-alarm)
