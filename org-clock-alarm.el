@@ -35,6 +35,7 @@
   (when (equal key "ok")
     (org-clock-alarm-stop)
     )
+  )
 
 (defun org-clock-overtime-notify()
   "show alarm when over time"
