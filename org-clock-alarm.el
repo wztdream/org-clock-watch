@@ -26,10 +26,8 @@
   :group 'org-clock-alarm
   :type 'file)
 
-(defcustom org-clock-alarm-threshold (* 40 60)
-  "over this seconds, will show over time notify"
-  :group 'org-clock-alarm
-  :type 'integer)
+(defvar org-clock-alarm-threshold (* 40 60)
+  "over this seconds, will show over time notify")
 
 (defcustom org-clock-alarm-overtime-notify-interval 180
   "over this seconds, will show over time notify"
@@ -71,6 +69,7 @@
 
     ;; if off then turn on
     (progn
+      (setq org-clock-alarm-threshold (* 60 (read-number "Threshold in Min: " 40)))
       (org-clock-in)
       (unless org-clock-alarm-timmer
         (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
