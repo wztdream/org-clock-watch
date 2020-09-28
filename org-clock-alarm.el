@@ -48,6 +48,7 @@
          (time-less-p (org-x11-idle-seconds) '(0 180 0 0))) ;; only alarm once if idle
     (notifications-notify
      :title "OVERTIME"
+     :urgency 'critical
      :body (format "over time <b> +%s min</b>" (floor overred-time 60))
      :actions '("ok" "why not?")
      :on-action 'org-clock-alarm-overtime-action
