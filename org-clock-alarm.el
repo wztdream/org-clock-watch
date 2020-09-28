@@ -54,6 +54,7 @@
      :on-action 'org-clock-alarm-overtime-action
      :app-icon org-clock-alarm-overtime-icon
      :sound-file org-clock-alarm-overtime-notify-sound
+     :timeout 3000
      ))))
 
 ;;;###autoload
