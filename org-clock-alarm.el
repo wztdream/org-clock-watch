@@ -35,8 +35,12 @@
   :type 'integer)
 
 (defun org-clock-alarm-overtime-action (id key)
-  (when (equal key "ok")
+  (cond
+   ((equal key "ok")
     (org-clock-alarm))
+   ((equal key "latter")
+    (org-clock-alarm)
+    (org-clock-alarm (* 60 (read-number "Min: " 10)) t)))
   )
 
 (defun org-clock-alarm-overtime-notify()
@@ -50,7 +54,7 @@
      :title "OVERTIME"
      :urgency 'critical
      :body (format "over time <b> +%s min</b>" (floor overred-time 60))
-     :actions '("ok" "why not?")
+     :actions '("ok" "why not?" "latter" "need more time")
      :on-action 'org-clock-alarm-overtime-action
      :app-icon org-clock-alarm-overtime-icon
      :sound-file org-clock-alarm-overtime-notify-sound
@@ -58,8 +62,10 @@
      ))))
 
 ;;;###autoload
-(defun org-clock-alarm ()
-  "turn on/off org clock alarm"
+(defun org-clock-alarm (&optional min continue-last)
+  "turn on/off org clock alarm, MIN is the alarm threshold, CONTINUE-LAST is
+is Boolean, if non-nil will clock in last task
+"
   (interactive)
   (if org-clock-alarm-on-p
       ;; if on then turn off
@@ -71,8 +77,12 @@
 
     ;; if off then turn on
     (progn
-      (setq org-clock-alarm-threshold (* 60 (read-number "Threshold in Min: " 40)))
-      (org-clock-in)
+      (if min
+          (setq org-clock-alarm-threshold min)
+          (setq org-clock-alarm-threshold (* 60 (read-number "Threshold in Min: " 40))))
+      (if continue-last
+          (org-clock-in-last)
+          (org-clock-in))
       (unless org-clock-alarm-timmer
         (setq org-clock-alarm-timmer (run-with-timer t 1 'org-clock-alarm-overtime-notify)))
       (setq org-clock-alarm-on-p t)))
