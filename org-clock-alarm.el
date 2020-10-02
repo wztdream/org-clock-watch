@@ -40,6 +40,7 @@
     (org-clock-alarm))
    ((equal key "latter")
     (org-clock-alarm)
+    (shell-command "wmctrl -x -a Emacs")
     (org-clock-alarm (* 60 (read-number "Min: " 10)) t)))
   )
 
