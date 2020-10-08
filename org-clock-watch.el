@@ -14,6 +14,8 @@
 (defvar org-clock-watch-postponed-time 0
   "accumulated postponed time"
   )
+(defvar org-clock-watch-overred-time 0
+"over time value")
 
 (defvar org-clock-watch-work-plan-file-path nil
   "The the work plan org file path .")
@@ -63,11 +65,11 @@
    ((equal key "ok")
     (org-clock-out))
    ((equal key "5min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-postponed-time (* 60 5)))
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 5)))
     )
    ((equal key "latter")
     (shell-command "wmctrl -x -a Emacs")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-postponed-time (* 60 (read-number "Threshold in Min: " 10))))
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time (* 60 (read-number "Threshold in Min: " 10))))
     ))
   )
 
@@ -82,26 +84,24 @@ you need to run this function as a timer, in you init file
    (cond
    ;; org-clock is running then watch it
    ((org-clocking-p)
-    (unless org-clock-watch-threshold
-      (setq org-clock-watch-threshold (* 60 (read-number "Threshold in Min: " 40)))
-      )
-    (when org-clock-watch-set-clock-notify-passed-time
-      (setq org-clock-watch-set-clock-notify-passed-time 0)
-      )
-    (let ((overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) org-clock-watch-threshold)))
-      (when (and
-             (>= (- overred-time org-clock-watch-postponed-time) 0)
-             (zerop (mod overred-time org-clock-watch-overtime-notify-interval)))
-        (notifications-notify
-         :title org-clock-current-task
-         :urgency 'critical
-         :body (format "over time <b> +%s min</b>" (floor overred-time 60))
-         :actions '("ok" "why not?" "5min" "5min" "latter" "more time")
-         :on-action 'org-clock-watch-overtime-action
-         :app-icon org-clock-watch-overtime-icon
-         :sound-file org-clock-watch-overtime-notify-sound
-         :timeout 3000
-         ))))
+    (unless org-clock-watch-on-p
+      (setq org-clock-watch-on-p t
+      org-clock-watch-threshold (* 60 (read-number "Threshold in Min: " 40))
+      org-clock-watch-set-clock-notify-passed-time 0))
+    (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) org-clock-watch-threshold))
+    (when (and
+           (>= (- org-clock-watch-overred-time org-clock-watch-postponed-time) 0)
+           (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
+      (notifications-notify
+       :title org-clock-current-task
+       :urgency 'critical
+       :body (format "over time <b> +%s min</b>" (floor overred-time 60))
+       :actions '("ok" "why not?" "5min" "5min" "latter" "more time")
+       :on-action 'org-clock-watch-overtime-action
+       :app-icon org-clock-watch-overtime-icon
+       :sound-file org-clock-watch-overtime-notify-sound
+       :timeout 3000
+       )))
    ;; org-clock is not running, then notify to clock in a task
    ((not (org-clocking-p))
     (setq org-clock-watch-set-clock-notify-passed-time (1+ org-clock-watch-set-clock-notify-passed-time))
