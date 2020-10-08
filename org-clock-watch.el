@@ -18,6 +18,17 @@
 (defvar org-clock-watch-work-plan-file-path nil
   "The the work plan org file path .")
 
+(defvar org-clock-watch-set-clock-notify-interval (* 60 3)
+  "time interval to notify user set clock"
+  )
+
+(defvar org-clock-watch-set-clock-notify-passed-time 0
+  "total time (sec) pass since first notify"
+  )
+
+(defvar org-clock-watch-threshold nil
+  "over this seconds, will show over time notify")
+
 (defcustom org-clock-watch-notify-to-set-clock-sound (when load-file-name
                                                    (concat (file-name-directory load-file-name)
                                                            "resources/why-not-clock-in.wav"))
@@ -37,9 +48,6 @@
   "The path to a icon file that´s to be show when overtime."
   :group 'org-clock-watch
   :type 'file)
-
-(defvar org-clock-watch-threshold (* 40 60)
-  "over this seconds, will show over time notify")
 
 (defcustom org-clock-watch-overtime-notify-interval 180
   "over this seconds, will show over time notify"
@@ -80,6 +88,9 @@ you need to run this function as a timer, in you init file
     (unless org-clock-watch-threshold
       (setq org-clock-watch-threshold (* 60 (read-number "Threshold in Min: " 40)))
       )
+    (when org-clock-watch-set-clock-notify-passed-time
+      (setq org-clock-watch-set-clock-notify-passed-time 0)
+      )
     (let ((overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) org-clock-watch-threshold)))
       (when (and
              (>= (- overred-time org-clock-watch-postponed-time) 0)
@@ -96,9 +107,13 @@ you need to run this function as a timer, in you init file
          ))))
    ;; org-clock is not running, then notify to clock in a task
    ((not (org-clocking-p))
+    (setq org-clock-watch-set-clock-notify-passed-time (1+ org-clock-watch-set-clock-notify-passed-time))
     (if org-clock-watch-on-p
-        (setq org-clock-watch-postponed-time 0)
-      (progn
+        ;; set initial value
+        (setq org-clock-watch-postponed-time 0
+              org-clock-watch-threshold nil
+              org-clock-watch-on-p nil)
+      (when (zerop (mod org-clock-watch-set-clock-notify-passed-time org-clock-watch-set-clock-notify-interval))
         (notifications-notify
          :title "Set a clock?"
          :urgency 'critical
