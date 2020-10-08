@@ -95,7 +95,7 @@ you need to run this function as a timer, in you init file
       (notifications-notify
        :title org-clock-current-task
        :urgency 'critical
-       :body (format "over time <b> +%s min</b>" (floor overred-time 60))
+       :body (format "over time <b> +%s min</b>" (floor org-clock-watch-overred-time 60))
        :actions '("ok" "why not?" "5min" "5min" "latter" "more time")
        :on-action 'org-clock-watch-overtime-action
        :app-icon org-clock-watch-overtime-icon
