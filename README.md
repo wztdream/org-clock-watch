@@ -24,7 +24,17 @@
 
 #### 安装教程
 
-1.  emacs 自行查找安装gitee包的方法,并安装org-clock-watch
+1.  emacs
+
+    1. 自行查找安装gitee包的方法,并安装org-clock-watch, 例如使用quelpa
+    
+    2. 设置work plan文件路径,如果你没有设置计时,它会打开这个文件,让你选择工作项目并计时
+
+        `setq org-clock-watch-work-plan-file-path "/path/to/your/work/plan/org/file"`
+        
+    3. 启动watcher, 在你的init文件中添加:
+
+       `(run-with-timer 1 1 'org-clock-watcher)`
 
 2.  spacemacs
 
@@ -47,13 +57,21 @@
 
      `(your-layer :variables org-clock-watch-work-plan-file-path "/file/path/to/your/work/plan/org/file")`
 
-#### 使用说明
+#### 工作流
 
-1.  设置工作计划目录
+1. 打开emacs
 
-    `setq org-clock-watch-work-plan-file-path "/path/to/your/org/file"`
+2. 开始某项工作
+
+3. 弹出提醒,并打开工作计划文件,让你对某项工作计时,并设置时长
+
+4. 超过时常则弹出提醒,并周期性提醒
+
+如果你愿意也可以直接打开工作目录并对某个工作计时,该包会自动识别各种情景.
+
 
 #### 哲学
-简单的任务就让它保持简单
 
-org-clock 非常强大,这个包只"监视"org-clock的状态,并发出提醒, 所以你可以使用org-clock的全部功能.
+1. 简单的任务就让它保持简单
+
+2. org-clock 非常强大,这个包只"监视"org-clock的状态,并发出提醒, 所以你可以使用org-clock的全部功能.
