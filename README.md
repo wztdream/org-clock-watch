@@ -58,6 +58,37 @@
     3. 在init file 的dotspacemacs-configuration-layers中添加 your-layer
 
      `(your-layer :variables org-clock-watch-work-plan-file-path "/file/path/to/your/work/plan/org/file")`
+3. 快捷键
+
+主要是设置org-clock的快捷键, 如果你喜欢hydra可以参考下面的设置
+
+```
+(defhydra hydra-org-clock (:color pink :hint nil)
+"
+org-clock hydra key
+
+clock                                     ^^^^ watcher
+───────────────────────────────────────── ^^^^ ───────────────────────
+[_i_]  clock in         [_c_]  cancel          [_R_]  reset threshold
+[_o_]  clock out        [_l_]  clock last
+[_r_]  resolve
+[_g_]  goto
+[_j_]  jump to current
+
+[_q_] cancel
+"
+      ("i" org-clock-in :exit t)
+      ("o" org-clock-out :exit t)
+      ("r" org-resolve-clocks :exit t)
+      ("g" org-clock-goto :exit t)
+      ("j" spacemacs/org-clock-jump-to-current-clock :exit t)
+      ("c" org-clock-cancel :exit t)
+      ("l" org-clock-in-last :exit t)
+      ("R" org-clock-watch-reset-threshold :exit t)
+      ("q" nil :color blue))
+
+(global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
+```
 
 #### 工作流
 
