@@ -73,6 +73,12 @@
     ))
   )
 
+(defun org-clock-watch-reset-threshold ()
+  "reset the threshold"
+  (interactive)
+  (setq org-clock-watch-threshold (* 60 (read-number "Min: " 40)))
+  )
+
 ;;;###autoload
 (defun org-clock-watcher()
   "To watch org-clock status, if `org-clocking-p' is t and not set org-clock-watch,
