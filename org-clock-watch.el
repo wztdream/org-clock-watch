@@ -1,5 +1,5 @@
 ;; Author: zongtao wang <wztdream@163.com>
-;; Package-Requires: ((org-clock))
+;; Package-Requires: ((org) (org-clock) (notifications))
 
 ;;; Code:
 
@@ -7,9 +7,6 @@
 (require 'org-clock)
 (require 'notifications)
 
-
-(defvar org-clock-watch-on-p nil
-  "alarm set or not")
 
 (defvar org-clock-watch-postponed-time 0
   "accumulated postponed time"
@@ -27,9 +24,6 @@
 (defvar org-clock-watch-set-clock-notify-passed-time 0
   "total time (sec) pass since first notify"
   )
-
-(defvar org-clock-watch-threshold nil
-  "over this seconds, will show over time notify")
 
 (defcustom org-clock-watch-notify-to-set-clock-sound (when load-file-name
                                                    (concat (file-name-directory load-file-name)
@@ -73,12 +67,6 @@
     ))
   )
 
-(defun org-clock-watch-reset-threshold ()
-  "reset the threshold"
-  (interactive)
-  (setq org-clock-watch-threshold (* 60 (read-number "Min: " 40)))
-  )
-
 ;;;###autoload
 (defun org-clock-watcher()
   "To watch org-clock status, if `org-clocking-p' is t and not set org-clock-watch,
@@ -90,13 +78,15 @@ you need to run this function as a timer, in you init file
    (cond
    ;; org-clock is running then watch it
    ((org-clocking-p)
-    (unless org-clock-watch-on-p
-      (setq org-clock-watch-on-p t
-      org-clock-watch-threshold (* 60 (read-number "Threshold in Min: " 40))
-      org-clock-watch-set-clock-notify-passed-time 0))
-    (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) org-clock-watch-threshold))
+    (when (equal org-clock-effort "")
+      (org-clock-goto)
+      (call-interactively #'org-set-effort)
+      (setq org-clock-watch-set-clock-notify-passed-time 0)
+      )
+    (unless (equal org-clock-effort "")
+      (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) (* 60 (org-duration-to-minutes org-clock-effort)))))
     (when (and
-           (>= (- org-clock-watch-overred-time org-clock-watch-postponed-time) 0)
+           (> (- org-clock-watch-overred-time org-clock-watch-postponed-time) 0)
            (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
       (notifications-notify
        :title org-clock-current-task
@@ -111,11 +101,10 @@ you need to run this function as a timer, in you init file
    ;; org-clock is not running, then notify to clock in a task
    ((not (org-clocking-p))
     (setq org-clock-watch-set-clock-notify-passed-time (1+ org-clock-watch-set-clock-notify-passed-time))
-    (if org-clock-watch-on-p
+    (if (not (equal org-clock-effort ""))
         ;; set initial value
         (setq org-clock-watch-postponed-time 0
-              org-clock-watch-threshold nil
-              org-clock-watch-on-p nil)
+              org-clock-effort "")
       (when (zerop (mod org-clock-watch-set-clock-notify-passed-time org-clock-watch-set-clock-notify-interval))
         (notifications-notify
          :title "Set a clock?"
