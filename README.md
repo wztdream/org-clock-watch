@@ -67,24 +67,25 @@
 "
 org-clock hydra key
 
-clock                                     ^^^^ watcher
+clock                                     ^^^^ effort
 ───────────────────────────────────────── ^^^^ ───────────────────────
-[_i_]  clock in         [_c_]  cancel          [_R_]  reset threshold
-[_o_]  clock out        [_l_]  clock last
+[_i_]  clock in         [_c_]  cancel          [_e_] set effort
+[_o_]  clock out        [_l_]  clock last      [_E_] reset effort
 [_r_]  resolve
 [_g_]  goto
 [_j_]  jump to current
 
 [_q_] cancel
 "
-      ("i" org-clock-in :exit t)
+      ("i" org-clock-in)
       ("o" org-clock-out :exit t)
       ("r" org-resolve-clocks :exit t)
       ("g" org-clock-goto :exit t)
       ("j" spacemacs/org-clock-jump-to-current-clock :exit t)
       ("c" org-clock-cancel :exit t)
-      ("l" org-clock-in-last :exit t)
-      ("R" org-clock-watch-reset-threshold :exit t)
+      ("l" org-clock-in-last)
+      ("e" org-set-effort :exit t)
+      ("E" org-clock-modify-effort-estimate :exit t)
       ("q" nil :color blue))
 
 (global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
@@ -94,19 +95,23 @@ clock                                     ^^^^ watcher
 
 1. 打开emacs
 
-2. 开始某项工作
+2. 开始做你想做的事情
 
-3. 弹出提醒,并打开工作计划文件,让你对某项工作计时,并设置时长
+3. 忘记计时了,org-clock-watch弹出提醒,播放声音,打开工作计划文件, 你可以用`org-clock-in` 来计时
 
-4. 如果你愿意也可以直接打开工作目录并对某个工作计时 `org-clock-in`,该包会自动识别各种情景.
+4. 忘记设置提醒时长了, org-clock-watch弹出提醒,播放声音,定位到计时项目, 你可以用 `org-set-effort` 来设置提醒时长
 
-5. 超过时长则周期性弹出提醒,播放声音,直到你结束计时 `org-clock-out`
+5. 如果你愿意也可以直接打开工作目录并对某个工作计时, 并设置effort, org-clock-watch 能够识别这些情景
 
-6. 你发现时间不够,需要在多工作5分钟,点击提醒框中的"5 min",提醒自动延后5分钟
+6. 超过时长则周期性弹出提醒,播放声音,直到你结束计时 `org-clock-out`
 
-7. 你临时有事离开电脑一会儿, 该包会自动识别, 停止提醒,直到你回来. org-clock 弹出恢复窗口,引导你恢复计时,比如从计时中扣除10分钟等等
+7. 你发现时间不够,需要再多工作5分钟,点击提醒框中的"5 min",提醒自动延后5 分钟
 
-8. 一周以后,你想看看这一周你都做了什么, 打开工作计划文件, 运行 `org-clock-report` 则以表格方式给出花费时间分布.
+8. 你发现设置的effort 不合理, 可以用 `org-clock-modify-effort-estimatek` 重新设置effort
+
+9. 你临时有事离开电脑一会儿, 该包会自动识别, 停止提醒,直到你回来. org-clock 弹出恢复窗口,引导你恢复计时,比如从计时中扣除10分钟等等
+
+10. 一周以后,你想看看这一周你都做了什么, 打开工作计划文件, 运行 `org-clock-report` 则以表格方式给出花费时间分布.
 
 总之, 你只需要运行org-clock 的计时命令,剩下的不用你管.
 
