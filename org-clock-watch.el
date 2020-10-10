@@ -7,9 +7,6 @@
 (require 'org-clock)
 (require 'notifications)
 
-(defvar org-clock-watch-effort-notify-interval (* 60 1)
-  "alarm interval to set effort"
-  )
 
 (defvar org-clock-watch-postponed-time 0
   "accumulated postponed time"
@@ -20,9 +17,6 @@
 (defvar org-clock-watch-work-plan-file-path nil
   "The the work plan org file path .")
 
-(defvar org-clock-watch-clock-in-notify-interval (* 60 3)
-  "time interval to notify user set clock"
-  )
 
 (defvar org-clock-watch-set-watch-notify-passed-time 0
   "total time (sec) pass since first notify"
@@ -60,6 +54,17 @@
   "over this seconds, will show over time notify"
   :group 'org-clock-watch
   :type 'integer)
+
+(defcustom org-clock-watch-effort-notify-interval 60
+  "interval in sec to notify set effort"
+  :group 'org-clock-watch
+  :type 'integer)
+
+(defcustom org-clock-watch-clock-in-notify-interval 180
+  "time interval to notify user set clock"
+  :group 'org-clock-watch
+  :type 'integer
+  )
 
 (defun org-clock-watch-goto-work-plan()
   (shell-command "wmctrl -x -a Emacs")
