@@ -90,16 +90,18 @@ you need to run this function as a timer, in you init file
    ;; org-clock is running
    (progn
     ;; not set effort, then set it
-    (if (equal org-clock-effort "")
-        (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-effort-notify-interval))
-          (notifications-notify
-           :title "Set an effort?"
-           :urgency 'critical
-           :sound-file org-clock-watch-effort-sound
-           :app-icon org-pomodoro-no-set-me-icon
-           :timeout 3000)
-          (org-clock-goto)
-          (call-interactively #'org-set-effort))
+    (if (or (null org-clock-effort) (equal org-clock-effort ""))
+        (progn
+         ;; tic-toc
+         (setq org-clock-watch-set-watch-notify-passed-time (1+ org-clock-watch-set-watch-notify-passed-time))
+         (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-effort-notify-interval))
+           (notifications-notify
+            :title "Set an effort?"
+            :urgency 'critical
+            :sound-file org-clock-watch-effort-sound
+            :app-icon org-pomodoro-no-set-me-icon
+            :timeout 3000)
+           (org-clock-goto)))
       ;; effort have been set
       ;; initialize value
       (unless (zerop org-clock-watch-set-watch-notify-passed-time)
@@ -126,20 +128,20 @@ you need to run this function as a timer, in you init file
    ;; else org-clock is not running
    ;; tic-toc
    (setq org-clock-watch-set-watch-notify-passed-time (1+ org-clock-watch-set-watch-notify-passed-time))
-   ;; effort have been set, then initialize value
-   (if (equal org-clock-effort "")
-       (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-clock-in-notify-interval))
-         (notifications-notify
-          :title "clock in?"
-          :urgency 'critical
-          :sound-file org-clock-watch-clock-in-sound
-          :app-icon org-pomodoro-no-set-me-icon
-          :timeout 3000
-          )
-         (run-at-time "3 sec" nil 'org-clock-watch-goto-work-plan))
+   ;; notify to clock in
+   (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-clock-in-notify-interval))
+     (notifications-notify
+      :title "clock in?"
+      :urgency 'critical
+      :sound-file org-clock-watch-clock-in-sound
+      :app-icon org-pomodoro-no-set-me-icon
+      :timeout 3000
+      )
+     (run-at-time "3 sec" nil 'org-clock-watch-goto-work-plan))
+   ;; if effort is not nil, then initialize value
+   (when org-clock-effort)
        ;; else set initial value
        (setq org-clock-watch-postponed-time 0
-             org-clock-effort "")
-     ))))
+             org-clock-effort nil))))
 
 (provide 'org-clock-watch)
