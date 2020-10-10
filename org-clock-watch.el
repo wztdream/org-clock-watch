@@ -7,6 +7,9 @@
 (require 'org-clock)
 (require 'notifications)
 
+(defvar org-clock-watch-effort-notify-interval (* 60 1)
+  "alarm interval to set effort"
+  )
 
 (defvar org-clock-watch-postponed-time 0
   "accumulated postponed time"
@@ -17,20 +20,28 @@
 (defvar org-clock-watch-work-plan-file-path nil
   "The the work plan org file path .")
 
-(defvar org-clock-watch-set-clock-notify-interval (* 60 3)
+(defvar org-clock-watch-clock-in-notify-interval (* 60 3)
   "time interval to notify user set clock"
   )
 
-(defvar org-clock-watch-set-clock-notify-passed-time 0
+(defvar org-clock-watch-set-watch-notify-passed-time 0
   "total time (sec) pass since first notify"
   )
 
-(defcustom org-clock-watch-notify-to-set-clock-sound (when load-file-name
-                                                   (concat (file-name-directory load-file-name)
-                                                           "resources/why-not-clock-in.wav"))
+(defcustom org-clock-watch-clock-in-sound (when load-file-name
+                                          (concat (file-name-directory load-file-name)
+                                                  "resources/why-not-clock-in.wav"))
   "The path to a sound file that´s to be played when found no clock is running."
   :group 'org-clock-watch
   :type 'file)
+
+(defcustom org-clock-watch-effort-sound (when load-file-name
+                                                   (concat (file-name-directory load-file-name)
+                                                           "resources/why-not-set-an-effort.wav"))
+  "The path to a sound file that´s to be played when found no clock is running."
+  :group 'org-clock-watch
+  :type 'file)
+
 (defcustom org-clock-watch-overtime-notify-sound (when load-file-name
                                       (concat (file-name-directory load-file-name)
                                               "resources/why-not-a-comfortable-rest.wav"))
@@ -75,45 +86,60 @@ you need to run this function as a timer, in you init file
 "
   ;; only watch when not idle
   (when (time-less-p (org-x11-idle-seconds) '(0 120 0 0))
-   (cond
-   ;; org-clock is running then watch it
-   ((org-clocking-p)
-    (when (equal org-clock-effort "")
-      (org-clock-goto)
-      (call-interactively #'org-set-effort)
-      (setq org-clock-watch-set-clock-notify-passed-time 0)
-      )
-    (unless (equal org-clock-effort "")
-      (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) (* 60 (org-duration-to-minutes org-clock-effort)))))
-    (when (and
-           (> (- org-clock-watch-overred-time org-clock-watch-postponed-time) 0)
-           (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
-      (notifications-notify
-       :title org-clock-current-task
-       :urgency 'critical
-       :body (format "over time <b> +%s min</b>" (floor org-clock-watch-overred-time 60))
-       :actions '("ok" "why not?" "5min" "5min" "latter" "more time")
-       :on-action 'org-clock-watch-overtime-action
-       :app-icon org-clock-watch-overtime-icon
-       :sound-file org-clock-watch-overtime-notify-sound
-       :timeout 3000
-       )))
-   ;; org-clock is not running, then notify to clock in a task
-   ((not (org-clocking-p))
-    (setq org-clock-watch-set-clock-notify-passed-time (1+ org-clock-watch-set-clock-notify-passed-time))
-    (if (not (equal org-clock-effort ""))
-        ;; set initial value
-        (setq org-clock-watch-postponed-time 0
-              org-clock-effort "")
-      (when (zerop (mod org-clock-watch-set-clock-notify-passed-time org-clock-watch-set-clock-notify-interval))
+   (if (org-clocking-p)
+   ;; org-clock is running
+   (progn
+    ;; not set effort, then set it
+    (if (equal org-clock-effort "")
+        (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-effort-notify-interval))
+          (notifications-notify
+           :title "Set an effort?"
+           :urgency 'critical
+           :sound-file org-clock-watch-effort-sound
+           :app-icon org-pomodoro-no-set-me-icon
+           :timeout 3000)
+          (org-clock-goto)
+          (call-interactively #'org-set-effort))
+      ;; effort have been set
+      ;; initialize value
+      (unless (zerop org-clock-watch-set-watch-notify-passed-time)
+        (setq org-clock-watch-set-watch-notify-passed-time 0))
+      ;; in case the user modified effort after overtime
+      (unless org-clock-notification-was-shown
+        (setq org-clock-watch-postponed-time 0))
+      ;; update over time
+      (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time)) (* 60 (org-duration-to-minutes org-clock-effort))))
+      ;; overtime alarm
+      (when (and
+             (> org-clock-watch-overred-time org-clock-watch-postponed-time)
+             (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
         (notifications-notify
-         :title "Set a clock?"
+         :title org-clock-current-task
          :urgency 'critical
-         :sound-file org-clock-watch-notify-to-set-clock-sound
-         :app-icon org-pomodoro-no-set-me-icon
+         :body (format "over time <b> +%s min</b>" (floor org-clock-watch-overred-time 60))
+         :actions '("ok" "why not?" "5min" "5min" "latter" "more time")
+         :on-action 'org-clock-watch-overtime-action
+         :app-icon org-clock-watch-overtime-icon
+         :sound-file org-clock-watch-overtime-notify-sound
          :timeout 3000
-         )
-        (run-at-time "3 sec" nil 'org-clock-watch-goto-work-plan))
-      )))))
+         ))))
+   ;; else org-clock is not running
+   ;; tic-toc
+   (setq org-clock-watch-set-watch-notify-passed-time (1+ org-clock-watch-set-watch-notify-passed-time))
+   ;; effort have been set, then initialize value
+   (if (equal org-clock-effort "")
+       (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-clock-in-notify-interval))
+         (notifications-notify
+          :title "clock in?"
+          :urgency 'critical
+          :sound-file org-clock-watch-clock-in-sound
+          :app-icon org-pomodoro-no-set-me-icon
+          :timeout 3000
+          )
+         (run-at-time "3 sec" nil 'org-clock-watch-goto-work-plan))
+       ;; else set initial value
+       (setq org-clock-watch-postponed-time 0
+             org-clock-effort "")
+     ))))
 
 (provide 'org-clock-watch)
