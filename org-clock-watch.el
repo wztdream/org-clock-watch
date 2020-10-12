@@ -150,7 +150,7 @@ you need to run this function as a timer, in you init file
       :title "clock in?"
       :urgency 'critical
       :sound-file org-clock-watch-clock-in-sound
-      :app-icon org-pomodoro-no-set-me-icon
+      :app-icon org-clock-watch-no-set-me-icon
       :timeout 3000
       )
      (run-at-time "3 sec" nil 'org-clock-watch-goto-work-plan))
