@@ -53,6 +53,13 @@
   :group 'org-clock-watch
   :type 'file)
 
+(defcustom org-clock-watch-no-set-me-icon (when load-file-name
+                                           (concat (file-name-directory load-file-name)
+                                                   "resources/tomato.svg"))
+  "The path to a icon file that´s to be show when overtime."
+  :group 'org-clock-watch
+  :type 'file)
+
 (defcustom org-clock-watch-overtime-notify-interval 180
   "over this seconds, will show over time notify"
   :group 'org-clock-watch
@@ -108,7 +115,7 @@ you need to run this function as a timer, in you init file
             :title "Set an effort?"
             :urgency 'critical
             :sound-file org-clock-watch-effort-sound
-            :app-icon org-pomodoro-no-set-me-icon
+            :app-icon org-clock-watch-no-set-me-icon
             :timeout 3000)
            (org-clock-goto)))
       ;; effort have been set
