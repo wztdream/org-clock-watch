@@ -1,27 +1,34 @@
 # org-clock-watch
 
 #### 介绍
-为org-clock 添加提醒功能,目的有两个:
+
+为org-clock 添加提醒功能,目的有三个:
 
 1. 记录工作时间,方便统计在每个工作项目上花的时间
+
 2. 防止过渡劳累工作,周期性提醒休息
+
 3. 在各个项目之间合理分配时间
 
 #### 功能
+
 **org-clock-watch添加的功能有:**
 
 1. 如果计算机没有idle, 并且没有设置计时提醒,则弹出提醒,并播放声音提醒添加计时提醒
+
 2. 如果计算机idel超过一定时间,则停止提醒,直到计算机不idle
+
 3. 如果超时则周期性提醒休息,并播放声音
+
 4. 如果需要延时,点击相应按钮,启动延时计时
 
 **org-clock 已有功能:**
 
 1. 统计一段时间内每个任务所花费的时间
+
 2. 计算机idle超过一段时间,互动式恢复计时,如减去idel时间,保留指定时间等等
+
 3. 开启org-clock 在modeline显示任务功能,则可显示当前任务
-
-
 
 #### 安装教程
 
@@ -97,7 +104,7 @@ clock                             ^^^^effort             ^^watcher
 
 6. 超过时长则周期性弹出提醒,播放声音,直到你结束计时 `org-clock-out`
 
-7. 你发现时间不够,需要再多工作5分钟,点击提醒框中的"5 min",提醒自动延后5 分钟
+7. 你发现时间不够,需要再多工作5分钟,点击提醒框中的 "5 min",提醒自动延后5 分钟
 
 8. 你发现设置的effort 不合理, 可以用 `org-clock-modify-effort-estimate` 重新设置effort
 
@@ -112,13 +119,21 @@ clock                             ^^^^effort             ^^watcher
 可以参考工作流和hydra key 的设定, 如要命令有:
 
 1. 开始计时. 打开工作文件 `org-clock-in`
+
 2. 设置提醒时长. `org-set-effort`
+
 3. 结束计时. `org-clock-out`
+
 4. 修改提醒时长 `org-clock-modify-effort-estimate`
+
 5. 查看org-clock-watch 状态 `org-clock-watch-status`
+
 6. 关闭 org-clock-watch `C-u C-u org-clock-watch-toggle`
+
 7. 开启 org-clock-watch `C-u org-clock-watch-toggle`
+
 8. Toggle org-clock-watch `org-clock-watch-toggle`
+
 9. 打开工作计划文件 `org-clock-watch-goto-work-plan`
 
 org-clock-watch 使用的icon, 播放的声音, 提醒周期都是可以定制的:
