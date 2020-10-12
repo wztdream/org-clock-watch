@@ -70,6 +70,8 @@
   )
 
 (defun org-clock-watch-goto-work-plan()
+  "open work plan org file"
+  (interactive)
   (shell-command "wmctrl -x -a Emacs")
   (find-file org-clock-watch-work-plan-file-path))
 
