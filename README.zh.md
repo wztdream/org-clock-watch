@@ -94,7 +94,7 @@ clock                             ^^^^effort             ^^watcher
 
 1. 打开emacs
 
-2. 开始做你想做的事情
+2. 开始做你想做的事情 (不限于emacs)
 
 3. 忘记计时了,org-clock-watch弹出提醒,播放声音,打开工作计划文件, 你可以用`org-clock-in` 来计时
 
@@ -145,3 +145,5 @@ org-clock-watch 使用的icon, 播放的声音, 提醒周期都是可以定制�
 1. 简单的任务就让它保持简单
 
 2. org-clock 非常强大,这个包只"监视"org-clock的状态,并发出提醒, 所以你可以使用org-clock的全部功能.
+
+Enjoy it!
