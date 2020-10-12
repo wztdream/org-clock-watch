@@ -34,7 +34,13 @@
 
 1. 使用 [quelpa](https://github.com/quelpa/quelpa) 安装本包, 只需在emacs中eval下面的代码, quela会记忆安装的包,重启emacs并不需要重新安装包,详见quelpa repo
 
+   gitee:
+
   `(quelpa `(org-clock-watch :fetcher git :url "https://gitee.com/zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
+
+   github:
+
+  `(quelpa `(org-clock-watch :fetcher git :url "https://github.com/wztdream/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
 
 2. 设置work plan文件路径,如果你没有设置计时,它会打开这个文件,让你选择工作项目并计时
 
