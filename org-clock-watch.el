@@ -7,6 +7,9 @@
 (require 'org-clock)
 (require 'notifications)
 
+(defvar org-clock-watch-timer nil
+  "the timer that runs org-clock-watcher"
+  )
 
 (defvar org-clock-watch-postponed-time 0
   "accumulated postponed time"
@@ -83,7 +86,6 @@
     ))
   )
 
-;;;###autoload
 (defun org-clock-watcher()
   "To watch org-clock status, if `org-clocking-p' is t and not set org-clock-watch,
 then set org-clock-watch, if `org-clocking-p' is nil then notify to set org-clock,
@@ -149,4 +151,38 @@ you need to run this function as a timer, in you init file
        (setq org-clock-watch-postponed-time 0
              org-clock-effort nil))))
 
+;;;###autoload
+(defun org-clock-watch-toggle (&optional on-off)
+  "start/stop the timer that runs org-clock-watcher
+ON-OFF `C-u' or 'on means turn on, `C-u C-u' or 'off means turn off, `nil' means toggle
+"
+  (interactive "P")
+  (cond
+   ((null on-off)
+    (if org-clock-watch-timer
+    (setq org-clock-watch-timer (cancel-timer org-clock-watch-timer))
+    (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))
+    ))
+   ((or (equal on-off 'on)(equal on-off '(4)))
+    (unless org-clock-watch-timer
+      (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))
+      ))
+   ((or (equal on-off 'off) (equal on-off '(16)))
+    (when org-clock-watch-timer
+      (setq org-clock-watch-timer (cancel-timer org-clock-watch-timer))
+      ))
+   )
+  (if org-clock-watch-timer
+      (message "org-clock-watcher started")
+    (message "org-clock-watcher stopped"))
+  )
+(defun org-clock-watch-status ()
+"get the status of watcher"
+(interactive)
+(if org-clock-watch-timer
+    (message "org-clock-watcher is running")
+  (message "org-clock-watcher is stopped")))
+
 (provide 'org-clock-watch)
+
+;;code end here
