@@ -24,41 +24,19 @@
 
 #### 安装教程
 
-1.  emacs
+1. 使用 [quelpa](https://github.com/quelpa/quelpa) 安装本包, 只需在emacs中eval下面的代码, quela会记忆安装的包,重启emacs并不需要重新安装包,详见quelpa repo
 
-    1. 使用 [quelpa](https://github.com/quelpa/quelpa) 安装本包, 只需在emacs中eval下面的代码, quela会记忆安装的包,重启emacs并不需要重新安装包,详见quelpa repo
+  `(quelpa `(org-clock-watch :fetcher git :url "https://gitee.com/zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
 
-      `(quelpa `(org-clock-watch :fetcher git :url "https://gitee.com/zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
-    
-    2. 设置work plan文件路径,如果你没有设置计时,它会打开这个文件,让你选择工作项目并计时
+2. 设置work plan文件路径,如果你没有设置计时,它会打开这个文件,让你选择工作项目并计时
 
-        `setq org-clock-watch-work-plan-file-path "/path/to/your/work/plan/org/file"`
-        
-    3. 启动watcher, 在你的init文件中添加:
+    `setq org-clock-watch-work-plan-file-path "/path/to/your/work/plan/org/file"`
 
-       `(run-with-timer 1 1 'org-clock-watcher)`
+3. 启动watcher, 在你的init文件中添加:
 
-2.  spacemacs
+   `(org-clock-watch-toggle 'on)`
 
-    1. 在your-layer中添加包 
-
-       (org-clock-watch :location (recipe :fetcher git :url "git@gitee.com:zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))
-
-    2. 配置包
-
-       ```
-       (defun your-layer/init-org-clock-watch()
-           (use-package org-clock-watch
-               :defer t
-               :init
-               (run-with-timer 1 1 'org-clock-watcher)
-           ))
-
-       ```
-    3. 在init file 的dotspacemacs-configuration-layers中添加 your-layer
-
-     `(your-layer :variables org-clock-watch-work-plan-file-path "/file/path/to/your/work/plan/org/file")`
-3. 快捷键
+4. 快捷键
 
 主要是设置org-clock的快捷键, 如果你喜欢hydra可以参考下面的设置
 
@@ -67,13 +45,13 @@
 "
 org-clock hydra key
 
-clock                                     ^^^^ effort
-───────────────────────────────────────── ^^^^ ───────────────────────
-[_i_]  clock in         [_c_]  cancel          [_e_] set effort
-[_o_]  clock out        [_l_]  clock last      [_E_] reset effort
-[_r_]  resolve
-[_g_]  goto
-[_j_]  jump to current
+clock                             ^^^^effort             ^^watcher
+-------------------------------^^^^^^^---------------------------------
+[_i_]  clock in     [_c_]  cancel     [_e_] set effort     [_t_] toggle
+[_l_]  clock last   [_o_]  clock out  [_E_] reset effort   [_s_] start
+[_r_]  resolve                                         ^^^^[_S_] stop
+[_g_]  goto                                            ^^^^[_w_] status
+[_j_]  jump2current
 
 [_q_] cancel
 "
@@ -86,6 +64,10 @@ clock                                     ^^^^ effort
       ("l" org-clock-in-last)
       ("e" org-set-effort :exit t)
       ("E" org-clock-modify-effort-estimate :exit t)
+      ("t" org-clock-watch-toggle :exit t)
+      ("s" (org-clock-watch-toggle 'on) :exit t)
+      ("S" (org-clock-watch-toggle 'off) :exit t)
+      ("w" (org-clock-watch-status))
       ("q" nil :color blue))
 
 (global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
