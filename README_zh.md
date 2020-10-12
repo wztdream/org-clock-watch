@@ -122,7 +122,7 @@ clock                             ^^^^effort             ^^watcher
 
 ## 使用方法
 
-可以参考工作流和hydra key 的设定, 如要命令有:
+可以参考工作流和hydra key 的设定, 主要命令有:
 
 1. 开始计时. 打开工作文件 `org-clock-in`
 
