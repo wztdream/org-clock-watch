@@ -5,6 +5,7 @@
 
 1. 记录工作时间,方便统计在每个工作项目上花的时间
 2. 防止过渡劳累工作,周期性提醒休息
+3. 在各个项目之间合理分配时间
 
 #### 功能
 **org-clock-watch添加的功能有:**
@@ -36,7 +37,15 @@
 
    `(org-clock-watch-toggle 'on)`
 
-4. 快捷键
+4. 使用系统idle时间
+
+    如果想要使用电脑的idle时间(而不是emacs的idle 时间) 需要安装 xprintidle 如果是ubuntu系统 `sudo apt install xprintidle` 即可. 然后 `M-x customize-varialbe org-clock-x11idle-program-name` 把设置改成 xprintidle 即可
+
+    详情请参考[emacs 手册](https://www.gnu.org/software/emacs/manual/html_node/org/Resolving-idle-time.html)
+
+    > On computers using macOS, idleness is based on actual user idleness, not just Emacs’ idle time. For X11, you can install a utility program ‘x11idle.c’, available in the ‘contrib/scripts/’ directory of the Org Git distribution, or install the xprintidle package and set it to the variable org-clock-x11idle-program-name if you are running Debian, to get the same general treatment of idleness. On other systems, idle time refers to Emacs idle time only.
+
+5. 快捷键
 
 主要是设置org-clock的快捷键, 如果你喜欢hydra可以参考下面的设置
 
@@ -48,10 +57,10 @@ org-clock hydra key
 clock                             ^^^^effort             ^^watcher
 -------------------------------^^^^^^^---------------------------------
 [_i_]  clock in     [_c_]  cancel     [_e_] set effort     [_t_] toggle
-[_l_]  clock last   [_o_]  clock out  [_E_] reset effort   [_s_] start
+[_L_]  clock last   [_o_]  clock out  [_E_] reset effort   [_s_] start
 [_r_]  resolve                                         ^^^^[_S_] stop
 [_g_]  goto                                            ^^^^[_w_] status
-[_j_]  jump2current
+[_J_]  jump2current                                    ^^^^[_O_] open plan
 
 [_q_] cancel
 "
@@ -59,15 +68,16 @@ clock                             ^^^^effort             ^^watcher
       ("o" org-clock-out :exit t)
       ("r" org-resolve-clocks :exit t)
       ("g" org-clock-goto :exit t)
-      ("j" spacemacs/org-clock-jump-to-current-clock :exit t)
+      ("J" spacemacs/org-clock-jump-to-current-clock :exit t)
       ("c" org-clock-cancel :exit t)
-      ("l" org-clock-in-last)
+      ("L" org-clock-in-last)
       ("e" org-set-effort :exit t)
       ("E" org-clock-modify-effort-estimate :exit t)
       ("t" org-clock-watch-toggle :exit t)
       ("s" (org-clock-watch-toggle 'on) :exit t)
       ("S" (org-clock-watch-toggle 'off) :exit t)
       ("w" (org-clock-watch-status))
+      ("O" org-clock-watch-goto-work-plan)
       ("q" nil :color blue))
 
 (global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
@@ -89,7 +99,7 @@ clock                             ^^^^effort             ^^watcher
 
 7. 你发现时间不够,需要再多工作5分钟,点击提醒框中的"5 min",提醒自动延后5 分钟
 
-8. 你发现设置的effort 不合理, 可以用 `org-clock-modify-effort-estimatek` 重新设置effort
+8. 你发现设置的effort 不合理, 可以用 `org-clock-modify-effort-estimate` 重新设置effort
 
 9. 你临时有事离开电脑一会儿, 该包会自动识别, 停止提醒,直到你回来. org-clock 弹出恢复窗口,引导你恢复计时,比如从计时中扣除10分钟等等
 
@@ -97,6 +107,23 @@ clock                             ^^^^effort             ^^watcher
 
 总之, 你只需要运行org-clock 的计时命令,剩下的不用你管.
 
+#### 使用方法
+
+可以参考工作流和hydra key 的设定, 如要命令有:
+
+1. 开始计时. 打开工作文件 `org-clock-in`
+2. 设置提醒时长. `org-set-effort`
+3. 结束计时. `org-clock-out`
+4. 修改提醒时长 `org-clock-modify-effort-estimate`
+5. 查看org-clock-watch 状态 `org-clock-watch-status`
+6. 关闭 org-clock-watch `C-u C-u org-clock-watch-toggle`
+7. 开启 org-clock-watch `C-u org-clock-watch-toggle`
+8. Toggle org-clock-watch `org-clock-watch-toggle`
+9. 打开工作计划文件 `org-clock-watch-goto-work-plan`
+
+org-clock-watch 使用的icon, 播放的声音, 提醒周期都是可以定制的:
+
+`M-x custom-group org-clock-watch`
 
 #### 哲学
 
