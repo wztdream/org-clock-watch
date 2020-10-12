@@ -1,6 +1,6 @@
 # org-clock-watch
 
-#### 介绍
+## 介绍
 
 为org-clock 添加提醒功能,目的有三个:
 
@@ -10,7 +10,7 @@
 
 3. 在各个项目之间合理分配时间
 
-#### 功能
+## 功能
 
 **org-clock-watch添加的功能有:**
 
@@ -30,17 +30,17 @@
 
 3. 开启org-clock 在modeline显示任务功能,则可显示当前任务
 
-#### 安装教程
+## 安装教程
 
 1. 使用 [quelpa](https://github.com/quelpa/quelpa) 安装本包, 只需在emacs中eval下面的代码, quela会记忆安装的包,重启emacs并不需要重新安装包,详见quelpa repo
 
    gitee:
 
-  `(quelpa `(org-clock-watch :fetcher git :url "https://gitee.com/zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
+   `(quelpa `(org-clock-watch :fetcher git :url "https://gitee.com/zongtao_wang/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
 
    github:
 
-  `(quelpa `(org-clock-watch :fetcher git :url "https://github.com/wztdream/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
+   `(quelpa `(org-clock-watch :fetcher git :url "https://github.com/wztdream/org-clock-watch.git" :branch "master" :files (:defaults "resources")))` 
 
 2. 设置work plan文件路径,如果你没有设置计时,它会打开这个文件,让你选择工作项目并计时
 
@@ -96,7 +96,7 @@ clock                             ^^^^effort             ^^watcher
 (global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
 ```
 
-#### 工作流
+## 工作流
 
 1. 打开emacs
 
@@ -120,7 +120,7 @@ clock                             ^^^^effort             ^^watcher
 
 总之, 你只需要运行org-clock 的计时命令,剩下的不用你管.
 
-#### 使用方法
+## 使用方法
 
 可以参考工作流和hydra key 的设定, 如要命令有:
 
@@ -146,7 +146,7 @@ org-clock-watch 使用的icon, 播放的声音, 提醒周期都是可以定制�
 
 `M-x custom-group org-clock-watch`
 
-#### 哲学
+## 哲学
 
 1. 简单的任务就让它保持简单
 
