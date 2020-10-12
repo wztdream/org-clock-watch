@@ -1,6 +1,6 @@
 # org-clock-watch
 
-#### Introduction
+## Introduction
 
 Add alarm feature for org-clock, there are mainly three goals for this package:
 
@@ -10,7 +10,7 @@ Add alarm feature for org-clock, there are mainly three goals for this package:
 
 3. balance your time on projects
 
-#### Features
+## Features
 
 **added by org-clock-watch:**
 
@@ -30,7 +30,7 @@ Add alarm feature for org-clock, there are mainly three goals for this package:
 
 3. show current alarm and time in mode line
 
-#### Installation
+## Installation
 
 1. use [quelpa](https://github.com/quelpa/quelpa) to install, you only need to eval below code in emacs, see details on quelpa repo
 
@@ -97,15 +97,15 @@ clock                             ^^^^effort             ^^watcher
 (global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
 ```
 
-#### Work flow
+## Work flow
 
-1. Open emacs
+1. open emacs
 
-2. Do things you like, not necessarily in emacs
+2. do things you like, not necessarily in emacs
 
 3. forgot to clock in? org-clock-watch pop up notify window, play sound to alarm you, you can clock in by `org-clock-in`
 
-4. forgot to set effort? org-clock-watch popup window, play sound to alarm and focus to current cock in task, you can set effort by `org-set-effort`, org clock treat effort as overtime threshold
+4. forgot to set effort? org-clock-watch popup window, play sound to alarm and focus to current clock in task, you can set effort by `org-set-effort`, org clock treat effort as overtime threshold
 
 5. of cause you can manually open work plan file and clock in and set effort, org-clock-watch can handle this scenario
 
@@ -117,13 +117,13 @@ clock                             ^^^^effort             ^^watcher
 
 9. you walk way for a while, it will stop alarm until you came back, then org-clock may guide you to resolve the clock in time, reduce 10 min for example
 
-10. one week latter, you want to see where is your time spend. Open work pan and run `org-clock-report`, there will be a report table shown up
+10. one week latter, you want to see where is your time spend. Open work plan and run `org-clock-report`, there will be a report table shown up
 
 So, you only need to run org-clock command, others are all auto
 
-#### Usage
+## Usage
 
-I think you can figure out how to use it by work flow and the hydra key, anyway there is the main command
+I think you can figure out how to use it by work flow and the hydra key, anyway here are the main commands:
 
 1. start clock in. `org-clock-in`
 
@@ -145,7 +145,7 @@ I think you can figure out how to use it by work flow and the hydra key, anyway 
 
 you can customize the icon, sound and alarm interval by `M-x custom-group org-clock-watch`
 
-#### Philosophy
+## Philosophy
 
 1. keep it simple for simple task
 
