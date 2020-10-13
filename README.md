@@ -53,9 +53,15 @@ Add alarm feature for org-clock, there are mainly three goals for this package:
 
 4. use system idle time
 
-    If you want to use system idle time not emacs idle time, you need to install `xprintidle`. If you are using ubuntu, it is easy just `sudo apt install xprintidle`, then `M-x customize-varialbe org-clock-x11idle-program-name` and set it to xprintidle
+    If you want to use system idle time not emacs idle time, you need to install `xprintidle`. 
+    
+    If you are using ubuntu, it is easy:
 
-    For details please check [emacs manual](https://www.gnu.org/software/emacs/manual/html_node/org/Resolving-idle-time.html)
+       1. `sudo apt install xprintidle`
+
+       2. `M-x customize-varialbe org-clock-x11idle-program-name` and set it to xprintidle
+
+    For other system please check [emacs manual](https://www.gnu.org/software/emacs/manual/html_node/org/Resolving-idle-time.html)
 
     > On computers using macOS, idleness is based on actual user idleness, not just Emacs’ idle time. For X11, you can install a utility program ‘x11idle.c’, available in the ‘contrib/scripts/’ directory of the Org Git distribution, or install the xprintidle package and set it to the variable org-clock-x11idle-program-name if you are running Debian, to get the same general treatment of idleness. On other systems, idle time refers to Emacs idle time only.
 

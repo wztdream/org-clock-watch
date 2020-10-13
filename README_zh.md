@@ -52,9 +52,15 @@
 
 4. 使用系统idle时间
 
-    如果想要使用电脑的idle时间(而不是emacs的idle 时间) 需要安装 xprintidle 如果是ubuntu系统 `sudo apt install xprintidle` 即可. 然后 `M-x customize-varialbe org-clock-x11idle-program-name` 把设置改成 xprintidle 即可
+    如果想要使用电脑的idle时间(而不是emacs的idle 时间) 需要安装 `xprintidle`
+    
+    如果是ubuntu系统:
+    
+       1. `sudo apt install xprintidle`
 
-    详情请参考[emacs 手册](https://www.gnu.org/software/emacs/manual/html_node/org/Resolving-idle-time.html)
+       2. `M-x customize-varialbe org-clock-x11idle-program-name` 把设置改成 xprintidle 即可
+
+    其他系统请参考[emacs 手册](https://www.gnu.org/software/emacs/manual/html_node/org/Resolving-idle-time.html)
 
     > On computers using macOS, idleness is based on actual user idleness, not just Emacs’ idle time. For X11, you can install a utility program ‘x11idle.c’, available in the ‘contrib/scripts/’ directory of the Org Git distribution, or install the xprintidle package and set it to the variable org-clock-x11idle-program-name if you are running Debian, to get the same general treatment of idleness. On other systems, idle time refers to Emacs idle time only.
 
