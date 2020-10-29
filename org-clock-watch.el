@@ -117,7 +117,8 @@ you need to run this function as a timer, in you init file
             :sound-file org-clock-watch-effort-sound
             :app-icon org-clock-watch-no-set-me-icon
             :timeout 3000)
-           (org-clock-goto)))
+           (run-at-time "3 sec" nil (lambda nil (shell-command "wmctrl -x -a Emacs") (org-clock-goto)))
+           ))
       ;; effort have been set
       ;; initialize value
       (unless (zerop org-clock-watch-set-watch-notify-passed-time)
