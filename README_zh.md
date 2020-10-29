@@ -99,7 +99,7 @@ clock                             ^^^^effort             ^^watcher
       ("O" org-clock-watch-goto-work-plan)
       ("q" nil :color blue))
 
-(global-set-key (kbd "C-c .") 'hydra-org-clock/boday)
+(global-set-key (kbd "C-c .") 'hydra-org-clock/body)
 ```
 
 ## 工作流
