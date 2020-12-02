@@ -90,7 +90,6 @@
     (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 5)))
     )
    ((equal key "10min")
-    (shell-command "wmctrl -x -a Emacs")
     (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 10)))
     ))
   )
