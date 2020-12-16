@@ -163,7 +163,7 @@ you need to run this function as a timer, in you init file
       :app-icon org-clock-watch-no-set-me-icon
       :timeout 3000
       )
-     (run-at-time "2 sec" nil (funcall org-clock-watch-open-org-agenda-func)))
+     (run-at-time "2 sec" nil org-clock-watch-open-org-agenda-func))
    ;; if effort is not nil, then initialize value
    (when org-clock-effort)
        ;; else set initial value
