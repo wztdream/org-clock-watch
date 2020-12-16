@@ -25,6 +25,16 @@
   "total time (sec) pass since first notify"
   )
 
+(defvar org-clock-watch-open-org-agenda-func nil
+ "the function to open org-agenda, it should be a wrapper of org-agenda
+for example:
+(defun my/open-org-agenda-clock ()
+  (interactive)
+  (org-agenda nil SOME-LETTER))
+
+You can set `org-agenda-custom-commands' with SOME-LETTER
+")
+
 (defcustom org-clock-watch-clock-in-sound (when load-file-name
                                           (concat (file-name-directory load-file-name)
                                                   "resources/why-not-clock-in.wav"))
@@ -153,7 +163,7 @@ you need to run this function as a timer, in you init file
       :app-icon org-clock-watch-no-set-me-icon
       :timeout 3000
       )
-     (run-at-time "2 sec" nil 'wzt/org-agenda-clock))
+     (run-at-time "2 sec" nil (funcall org-clock-watch-open-org-agenda-func)))
    ;; if effort is not nil, then initialize value
    (when org-clock-effort)
        ;; else set initial value
