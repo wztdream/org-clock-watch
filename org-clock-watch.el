@@ -97,11 +97,14 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
    ((equal key "ok")
     (org-clock-out))
    ((equal key "5min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 5)))
-    )
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 5))))
    ((equal key "10min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 10)))
-    ))
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 10))))
+   ((equal key "20min")
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 20))))
+   ((equal key "30min")
+    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time  (* 60 30))))
+   )
   )
 
 (defun org-clock-watcher()
@@ -123,9 +126,9 @@ you need to run this function as a timer, in you init file
            (notifications-notify
             :title "Set an effort?"
             :urgency 'critical
-            :sound-file org-clock-watch-effort-sound
             :app-icon org-clock-watch-no-set-me-icon
             :timeout 3000)
+           (call-process "aplay" nil nil nil org-clock-watch-effort-sound)
            (run-at-time "2 sec" nil (lambda nil (shell-command "wmctrl -x -a Emacs") (org-set-effort)))
            ))
       ;; effort have been set
@@ -145,12 +148,13 @@ you need to run this function as a timer, in you init file
          :title org-clock-current-task
          :urgency 'critical
          :body (format "over time <b> +%s min</b>" (floor org-clock-watch-overred-time 60))
-         :actions '("ok" "why not?" "5min" "5min" "10min" "10min")
+         :actions '("ok" "why not?" "5min" "5min" "10min" "10min" "20min" "20min" "30min" "30min")
          :on-action 'org-clock-watch-overtime-action
          :app-icon org-clock-watch-overtime-icon
-         :sound-file org-clock-watch-overtime-notify-sound
          :timeout 3000
-         ))))
+         )
+        (call-process "aplay" nil nil nil org-clock-watch-overtime-notify-sound)
+        )))
    ;; else org-clock is not running
    ;; tic-toc
    (setq org-clock-watch-set-watch-notify-passed-time (1+ org-clock-watch-set-watch-notify-passed-time))
@@ -159,10 +163,10 @@ you need to run this function as a timer, in you init file
      (notifications-notify
       :title "clock in?"
       :urgency 'critical
-      :sound-file org-clock-watch-clock-in-sound
       :app-icon org-clock-watch-no-set-me-icon
       :timeout 3000
       )
+     (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)
      (run-at-time "2 sec" nil org-clock-watch-open-org-agenda-func))
    ;; if effort is not nil, then initialize value
    (when org-clock-effort)
@@ -193,8 +197,8 @@ ON-OFF `C-u' or 'on means turn on, `C-u C-u' or 'off means turn off, `nil' means
    )
   (if org-clock-watch-timer
       (message "org-clock-watcher started")
-    (message "org-clock-watcher stopped"))
-  )
+    (message "org-clock-watcher stopped")))
+
 (defun org-clock-watch-status ()
 "get the status of watcher"
 (interactive)
