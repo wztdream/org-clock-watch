@@ -129,7 +129,7 @@ you need to run this function as a timer, in you init file
             :app-icon org-clock-watch-no-set-me-icon
             :timeout 3000)
            (call-process "aplay" nil nil nil org-clock-watch-effort-sound)
-           (run-at-time "2 sec" nil (lambda nil (shell-command "wmctrl -x -a Emacs") (org-set-effort)))
+           (run-at-time nil nil (lambda nil (shell-command "wmctrl -x -a Emacs") (org-set-effort)))
            ))
       ;; effort have been set
       ;; initialize value
@@ -167,7 +167,7 @@ you need to run this function as a timer, in you init file
       :timeout 3000
       )
      (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)
-     (run-at-time "2 sec" nil org-clock-watch-open-org-agenda-func))
+     (run-at-time nil nil org-clock-watch-open-org-agenda-func))
    ;; if effort is not nil, then initialize value
    (when org-clock-effort)
        ;; else set initial value
