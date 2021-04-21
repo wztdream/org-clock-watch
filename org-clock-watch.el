@@ -127,7 +127,7 @@ you need to run this function as a timer, in you init file
             :title "Set an effort?"
             :urgency 'normal
             :app-icon org-clock-watch-no-set-me-icon
-            :timeout 3000)
+            :timeout 10000)
            (call-process "aplay" nil nil nil org-clock-watch-effort-sound)
            (run-at-time nil nil (lambda nil (shell-command "wmctrl -x -a Emacs") (org-set-effort)))
            ))
@@ -151,7 +151,7 @@ you need to run this function as a timer, in you init file
          :actions '("ok" "why not?" "5min" "5min" "10min" "10min" "20min" "20min" "30min" "30min")
          :on-action 'org-clock-watch-overtime-action
          :app-icon org-clock-watch-overtime-icon
-         :timeout 3000
+         :timeout 10000
          )
         (call-process "aplay" nil nil nil org-clock-watch-overtime-notify-sound)
         )))
@@ -164,7 +164,7 @@ you need to run this function as a timer, in you init file
       :title "clock in?"
       :urgency 'normal
       :app-icon org-clock-watch-no-set-me-icon
-      :timeout 3000
+      :timeout 10000
       )
      (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)
      (run-at-time nil nil org-clock-watch-open-org-agenda-func))
