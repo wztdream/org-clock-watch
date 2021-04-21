@@ -125,7 +125,7 @@ you need to run this function as a timer, in you init file
          (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-effort-notify-interval))
            (notifications-notify
             :title "Set an effort?"
-            :urgency 'critical
+            :urgency 'normal
             :app-icon org-clock-watch-no-set-me-icon
             :timeout 3000)
            (call-process "aplay" nil nil nil org-clock-watch-effort-sound)
@@ -146,7 +146,7 @@ you need to run this function as a timer, in you init file
              (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
         (notifications-notify
          :title org-clock-current-task
-         :urgency 'critical
+         :urgency 'normal
          :body (format "over time <b> +%s min</b>" (floor org-clock-watch-overred-time 60))
          :actions '("ok" "why not?" "5min" "5min" "10min" "10min" "20min" "20min" "30min" "30min")
          :on-action 'org-clock-watch-overtime-action
@@ -162,7 +162,7 @@ you need to run this function as a timer, in you init file
    (when (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-clock-in-notify-interval))
      (notifications-notify
       :title "clock in?"
-      :urgency 'critical
+      :urgency 'normal
       :app-icon org-clock-watch-no-set-me-icon
       :timeout 3000
       )
