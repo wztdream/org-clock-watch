@@ -111,7 +111,7 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   (find-file org-clock-watch-work-plan-file-path))
 
 (defun org-clock-watch-clock-in-action (id key)
-  (let (effort nil)
+  (let (effort)
     ;; get the effort
     (cond
      ((equal key "manual")
@@ -133,12 +133,12 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
     (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
     )
   )
+
 (defun org-clock-watch-clock-in-close (id reason)
-  (let (effort nil)
     ;; start clock and set effort
-    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
-    )
+    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path nil)
   )
+
 (defun org-clock-watch-overtime-action (id key)
   (cond
    ((equal key "ok")
