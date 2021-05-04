@@ -100,7 +100,9 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
           (set-buffer (marker-buffer marker))
           (goto-char (marker-position marker))
           (org-clock-in)
-          (org-set-effort nil effort)))
+          (when effort
+              (org-set-effort nil effort))
+          ))
     (warn "Clock not started (Could not find ID '%s' in file '%s')" id file)))
 (defun org-clock-watch-goto-work-plan()
   "open work plan org file"
@@ -109,7 +111,7 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   (find-file org-clock-watch-work-plan-file-path))
 
 (defun org-clock-watch-clock-in-action (id key)
-  (let (effort)
+  (let (effort nil)
     ;; get the effort
     (cond
      ((equal key "manual")
@@ -127,6 +129,12 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
      ((equal key "120min")
       (setq effort "02:00"))
      )
+    ;; start clock and set effort
+    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
+    )
+  )
+(defun org-clock-watch-clock-in-close (id reason)
+  (let (effort nil)
     ;; start clock and set effort
     (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
     )
@@ -205,6 +213,7 @@ you need to run this function as a timer, in you init file
       :app-icon org-clock-watch-no-set-me-icon
       :actions '("manual" "manual" "30min" "30min" "45min" "45min" "60mim" "60min" "90min" "90mim" "120min" "120min")
       :on-action 'org-clock-watch-clock-in-action
+      :on-close 'org-clock-watch-clock-in-close
       :timeout 10000
       )
      (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)
