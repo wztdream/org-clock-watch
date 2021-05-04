@@ -35,6 +35,13 @@ for example:
 You can set `org-agenda-custom-commands' with SOME-LETTER
 ")
 
+(defvar org-clock-watch-timer-file-path nil
+  "the file path for timer, which is an org file path"
+  )
+(defvar org-clock-watch-timer-id nil
+  "the id of the heading, which is a string"
+)
+
 (defcustom org-clock-watch-clock-in-sound (when load-file-name
                                           (concat (file-name-directory load-file-name)
                                                   "resources/why-not-clock-in.wav"))
@@ -85,7 +92,15 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   :group 'org-clock-watch
   :type 'integer
   )
-
+(defun org-clock-watch-start-heading-clock (id file)
+  "Start clock programmatically for heading with ID in FILE."
+  (if-let (marker (org-id-find-id-in-file id file t))
+      (save-current-buffer
+        (save-excursion
+          (set-buffer (marker-buffer marker))
+          (goto-char (marker-position marker))
+          (org-clock-in)))
+    (warn "Clock not started (Could not find ID '%s' in file '%s')" id file)))
 (defun org-clock-watch-goto-work-plan()
   "open work plan org file"
   (interactive)
