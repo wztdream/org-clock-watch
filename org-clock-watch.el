@@ -113,6 +113,7 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
     ;; get the effort
     (cond
      ((equal key "manual")
+      (shell-command "wmctrl -x -a Emacs")
       (setq effort (read-string "effort:" nil nil "00:60"))
       )
      ((equal key "30min")
