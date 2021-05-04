@@ -112,31 +112,35 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
 
 (defun org-clock-watch-clock-in-action (id key)
   (let (effort)
-    ;; get the effort
-    (cond
-     ((equal key "manual")
-      (shell-command "wmctrl -x -a Emacs")
-      (setq effort (read-string "effort:" nil nil "00:60"))
-      )
-     ((equal key "30min")
-      (setq effort "00:30"))
-     ((equal key "45min")
-      (setq effort "00:45"))
-     ((equal key "60min")
-      (setq effort "01:00"))
-     ((equal key "90min")
-      (setq effort "01:30"))
-     ((equal key "120min")
-      (setq effort "02:00"))
-     )
-    ;; start clock and set effort
-    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
-    )
+    (if (equal key "task")
+        (funcall org-clock-watch-open-org-agenda-func)
+      ;;else, get the effort
+      (cond
+       ((equal key "manual")
+        (shell-command "wmctrl -x -a Emacs")
+        (setq effort (read-string "effort:" nil nil "00:60"))
+        )
+       ((equal key "30min")
+        (setq effort "00:30"))
+       ((equal key "45min")
+        (setq effort "00:45"))
+       ((equal key "60min")
+        (setq effort "01:00"))
+       ((equal key "90min")
+        (setq effort "01:30"))
+       ((equal key "120min")
+        (setq effort "02:00"))
+       )
+      ;; start clock and set effort
+      (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
+      ))
   )
 
 (defun org-clock-watch-clock-in-close (id reason)
     ;; start clock and set effort
-    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path nil)
+  (when (equal reason 'expired)
+    (message "inner: id %s reason %s" id reason)
+    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path nil))
   )
 
 (defun org-clock-watch-overtime-action (id key)
@@ -211,7 +215,7 @@ you need to run this function as a timer, in you init file
       :title "clock in?"
       :urgency 'normal
       :app-icon org-clock-watch-no-set-me-icon
-      :actions '("manual" "manual" "30min" "30min" "45min" "45min" "60mim" "60min" "90min" "90mim" "120min" "120min")
+      :actions '("manual" "manual"  "task" "task" "30min" "30min" "45min" "45min" "60mim" "60min" "90min" "90mim" "120min" "120min")
       :on-action 'org-clock-watch-clock-in-action
       :on-close 'org-clock-watch-clock-in-close
       :timeout 10000
