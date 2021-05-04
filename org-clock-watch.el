@@ -92,14 +92,15 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   :group 'org-clock-watch
   :type 'integer
   )
-(defun org-clock-watch-start-heading-clock (id file)
-  "Start clock programmatically for heading with ID in FILE."
+(defun org-clock-watch-start-heading-clock (id file effort)
+  "Start clock programmatically for heading with ID in FILE, and set effort to EFFORT."
   (if-let (marker (org-id-find-id-in-file id file t))
       (save-current-buffer
         (save-excursion
           (set-buffer (marker-buffer marker))
           (goto-char (marker-position marker))
-          (org-clock-in)))
+          (org-clock-in)
+          (org-set-effort nil effort)))
     (warn "Clock not started (Could not find ID '%s' in file '%s')" id file)))
 (defun org-clock-watch-goto-work-plan()
   "open work plan org file"
@@ -107,6 +108,28 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   (shell-command "wmctrl -x -a Emacs")
   (find-file org-clock-watch-work-plan-file-path))
 
+(defun org-clock-watch-clock-in-action (id key)
+  (let (effort)
+    ;; get the effort
+    (cond
+     ((equal key "manual")
+      (setq effort (read-string "effort:" nil nil "00:60"))
+      )
+     ((equal key "30min")
+      (setq effort "00:30"))
+     ((equal key "45min")
+      (setq effort "00:45"))
+     ((equal key "60min")
+      (setq effort "01:00"))
+     ((equal key "90min")
+      (setq effort "01:30"))
+     ((equal key "120min")
+      (setq effort "02:00"))
+     )
+    ;; start clock and set effort
+    (org-clock-watch-start-heading-clock org-clock-watch-timer-id org-clock-watch-timer-file-path effort)
+    )
+  )
 (defun org-clock-watch-overtime-action (id key)
   (cond
    ((equal key "ok")
@@ -179,10 +202,12 @@ you need to run this function as a timer, in you init file
       :title "clock in?"
       :urgency 'normal
       :app-icon org-clock-watch-no-set-me-icon
+      :actions '("manual" "manual" "30min" "30min" "45min" "45min" "60mim" "60min" "90min" "90mim" "120min" "120min")
+      :on-action 'org-clock-watch-clock-in-action
       :timeout 10000
       )
      (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)
-     (run-at-time nil nil org-clock-watch-open-org-agenda-func))
+     )
    ;; if effort is not nil, then initialize value
    (when org-clock-effort)
        ;; else set initial value
