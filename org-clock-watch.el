@@ -8,7 +8,6 @@
 (require 'notifications)
 
 (defvar org-clock-watch-timer nil "the timer that runs org-clock-watcher")
-
 (defvar org-clock-watch-postponed-time 0 "accumulated postponed time")
 (defvar org-clock-watch-overred-time 0 "over time value")
 
@@ -36,6 +35,11 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   "non-nil means will send micro rest alarm, nil will disable it"
   :group 'org-clock-watch
   :type 'boolean)
+
+(defcustom org-clock-watch-idle-threshold-minutes
+  "2min" "only computer idle smaller then this minutes, watcher will alarm"
+  :group 'org-clock-watch
+  :type 'string)
 
 (defcustom org-clock-watch-clock-in-sound (when load-file-name
                                             (concat (file-name-directory load-file-name)
@@ -111,11 +115,6 @@ such as stretch your body, shake your head every 3 min
     (warn "Clock not started (Could not find ID '%s' in file '%s')"
           id file)))
 
-(defun org-clock-watch-initilize ()
-  "initialize variables"
-  (setq org-clock-watch-postponed-time 0 org-clock-watch-total-on-time
-        0))
-
 (defun org-clock-watch-goto-work-plan ()
   "open work plan org file"
   (interactive)
@@ -123,51 +122,34 @@ such as stretch your body, shake your head every 3 min
   (find-file org-clock-watch-work-plan-file-path))
 
 (defun org-clock-watch-clock-in-action (id key)
-  (let (effort)
-    (if (equal key "task")
-        (funcall org-clock-watch-open-org-agenda-func)
-      ;;else, get the effort
-      (cond
-       ((equal key "manual")
+  (cond
+   ((string-equal key "task")
+    (funcall org-clock-watch-open-org-agenda-func))
+   (t (when (string-equal key "manual")
         (shell-command "wmctrl -x -a Emacs")
-        (setq effort (read-string "effort:" nil nil "00:60")))
-       ((equal key "30min")
-        (setq effort "00:30"))
-       ((equal key "45min")
-        (setq effort "00:45"))
-       ((equal key "60min")
-        (setq effort "01:00"))
-       ((equal key "90min")
-        (setq effort "01:30"))
-       ((equal key "120min")
-        (setq effort "02:00")))
+        (setq key (read-string "effort:" nil nil "60min")))
       ;; start clock and set effort
       (org-clock-watch-start-heading-clock org-clock-watch-timer-id
-                                           org-clock-watch-timer-file-path effort))))
+                                           org-clock-watch-timer-file-path key))))
 
 (defun org-clock-watch-clock-in-close (id reason)
-  ;; start clock and set effort
+  ;; start clock and set effort, here we set effort to nil
+  ;; to allow auto clock with old effort in the task entry
   (when (equal reason 'expired)
-    (message "inner: id %s reason %s" id reason)
     (org-clock-watch-start-heading-clock org-clock-watch-timer-id
                                          org-clock-watch-timer-file-path nil)))
 
 (defun org-clock-watch-overtime-action (id key)
   (cond
-   ((equal key "ok")
-    (org-clock-out))
-   ((equal key "5min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time
-                                            (* 60 5))))
-   ((equal key "10min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time
-                                            (* 60 10))))
-   ((equal key "20min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time
-                                            (* 60 20))))
-   ((equal key "30min")
-    (setq org-clock-watch-postponed-time (+ org-clock-watch-overred-time
-                                            (* 60 30))))))
+   ((string-equal key "ok") (org-clock-out))
+   ((string-equal key "show")
+    (shell-command "wmctrl -x -a Emacs")
+    (org-clock-goto))
+   ((string-equal key "resolve")
+    (shell-command "wmctrl -x -a Emacs")
+    (org-resolve-clocks)
+    )
+   (t (org-clock-modify-effort-estimate key))))
 
 (defun org-clock-watcher ()
   "To watch org-clock status, if `org-clocking-p' is t and not set org-clock-watch,
@@ -177,8 +159,8 @@ you need to run this function as a timer, in you init file
   ;; tic-toc
   (setq org-clock-watch-total-on-time (1+ org-clock-watch-total-on-time))
   ;; only alarm when not idle
-  (when (time-less-p (org-x11-idle-seconds)
-                     '(0 120 0 0))
+  (when (< (org-x11-idle-seconds) (* 60
+                                     (org-duration-to-minutes org-clock-watch-idle-threshold-minutes)))
     (if (org-clocking-p)
         ;; org-clock is running
         (progn
@@ -201,13 +183,13 @@ you need to run this function as a timer, in you init file
                                                 (* 60
                                                    (org-duration-to-minutes org-clock-effort))))
           ;; overtime alarm
-          (when (and (> org-clock-watch-overred-time org-clock-watch-postponed-time)
+          (when (and (> org-clock-watch-overred-time 0)
                      (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
             (notifications-notify :title org-clock-current-task
                                   :urgency 'normal
                                   :body (format "over time <b> +%s min</b>"
-                                                (floor org-clock-watch-overred-time 60)):actions'("ok" "why not?" "5min" "5min" "10min" "10min"
-                                                "20min" "20min" "30min" "30min")
+                                                (floor org-clock-watch-overred-time 60)):actions'("ok" "why not?" "resolve" "resolve" "show" "show" "+5min" "+5m" "+10min" "+10m"
+                                                "+20min" "+20m" "+30min" "+30m")
                                   :on-action 'org-clock-watch-overtime-action
                                   :app-icon org-clock-watch-overtime-icon
                                   :timeout 10000)
@@ -262,8 +244,6 @@ ON-OFF `C-u' or 'on means turn on, `C-u C-u' or 'off means turn off, `nil' means
       (message "org-clock-watcher is running")
     (message "org-clock-watcher is stopped")))
 
-;; add hook to org-clock-out-hook, to initialize watch
-(add-hook 'org-clock-out-hook 'org-clock-watch-initilize)
 (provide 'org-clock-watch)
 
 ;;code end here
