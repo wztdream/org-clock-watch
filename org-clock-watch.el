@@ -17,14 +17,8 @@
 
 (defvar org-clock-watch-total-on-time 0 "total time (sec) since turn on watcher")
 
-(defvar org-clock-watch-open-org-agenda-func
-  nil "the function to open org-agenda, it should be a wrapper of org-agenda
-for example:
-(defun my/open-org-agenda-clock ()
-  (interactive)
-  (org-agenda nil SOME-LETTER))
-
-You can set `org-agenda-custom-commands' with SOME-LETTER
+(defvar org-clock-watch-choose-task-func
+  nil " the function to choose the task
 ")
 
 (defvar org-clock-watch-timer-file-path nil
@@ -124,7 +118,7 @@ such as stretch your body, shake your head every 3 min
 (defun org-clock-watch-clock-in-action (id key)
   (cond
    ((string-equal key "task")
-    (funcall org-clock-watch-open-org-agenda-func))
+    (funcall org-clock-watch-choose-task-func))
    (t (when (string-equal key "manual")
         (shell-command "wmctrl -x -a Emacs")
         (setq key (read-string "effort:" nil nil "60min")))
