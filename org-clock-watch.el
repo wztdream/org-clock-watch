@@ -141,14 +141,14 @@ such as stretch your body, shake your head every 3 min
 
 (defun org-clock-watch-overtime-action (id key)
   (cond
-   ((string-equal key "ok") (org-clock-out))
+   ((string-equal key "ok")
+    (org-clock-out))
    ((string-equal key "show")
     (shell-command "wmctrl -x -a Emacs")
     (org-clock-goto))
    ((string-equal key "resolve")
     (shell-command "wmctrl -x -a Emacs")
-    (org-resolve-clocks)
-    )
+    (org-resolve-clocks))
    (t (org-clock-modify-effort-estimate key))))
 
 (defun org-clock-watcher ()
@@ -188,8 +188,9 @@ you need to run this function as a timer, in you init file
             (notifications-notify :title org-clock-current-task
                                   :urgency 'normal
                                   :body (format "over time <b> +%s min</b>"
-                                                (floor org-clock-watch-overred-time 60)):actions'("ok" "why not?" "resolve" "resolve" "show" "show" "+5min" "+5m" "+10min" "+10m"
-                                                "+20min" "+20m" "+30min" "+30m")
+                                                (floor org-clock-watch-overred-time 60)):actions'("ok" "why not?" "resolve" "resolve" "show"
+                                                "show" "+5min" "+5m" "+10min" "+10m" "+20min"
+                                                "+20m" "+30min" "+30m")
                                   :on-action 'org-clock-watch-overtime-action
                                   :app-icon org-clock-watch-overtime-icon
                                   :timeout 10000)
@@ -222,13 +223,11 @@ ON-OFF `C-u' or 'on means turn on, `C-u C-u' or 'off means turn off, `nil' means
    ((null on-off)
     (if org-clock-watch-timer
         (setq org-clock-watch-timer (cancel-timer org-clock-watch-timer))
-      (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))
-      (org-clock-watch-initilize)))
+      (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))))
    ((or (equal on-off 'on)
         (equal on-off '(4)))
     (unless org-clock-watch-timer
-      (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))
-      (org-clock-watch-initilize)))
+      (setq org-clock-watch-timer (run-with-timer 5 1 'org-clock-watcher))))
    ((or (equal on-off 'off)
         (equal on-off '(16)))
     (when org-clock-watch-timer
