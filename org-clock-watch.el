@@ -42,6 +42,11 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   "the id of the heading, which is a string"
 )
 
+(defcustom org-clock-watch-micro-rest-p t
+  "The path to a sound file that´s to be played when found no clock is running."
+  :group 'org-clock-watch
+  :type 'boolean)
+
 (defcustom org-clock-watch-clock-in-sound (when load-file-name
                                           (concat (file-name-directory load-file-name)
                                                   "resources/why-not-clock-in.wav"))
@@ -77,8 +82,22 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
   :group 'org-clock-watch
   :type 'file)
 
+(defcustom org-clock-watch-micro-rest-sound (when load-file-name
+                                          (concat (file-name-directory load-file-name)
+                                                  "resources/bell.wav"))
+  "The path to a sound file that´s to be played when need micro rest."
+  :group 'org-clock-watch
+  :type 'file)
+
 (defcustom org-clock-watch-overtime-notify-interval 180
   "over this seconds, will show over time notify"
+  :group 'org-clock-watch
+  :type 'integer)
+
+(defcustom org-clock-watch-micro-rest-interval 180
+  "micro rest means a very short time interval and a very small rest
+such as stretch your body, shake your head every 3 min
+"
   :group 'org-clock-watch
   :type 'integer)
 
@@ -205,7 +224,7 @@ you need to run this function as a timer, in you init file
          :timeout 10000
          )
         (call-process "aplay" nil nil nil org-clock-watch-overtime-notify-sound)
-        )))
+        ))
    ;; else org-clock is not running
    ;; tic-toc
    (setq org-clock-watch-set-watch-notify-passed-time (1+ org-clock-watch-set-watch-notify-passed-time))
@@ -226,7 +245,10 @@ you need to run this function as a timer, in you init file
    (when org-clock-effort)
        ;; else set initial value
        (setq org-clock-watch-postponed-time 0
-             org-clock-effort nil))))
+             org-clock-effort nil)))
+   ;; micro rest alarm when system not idel
+   (when (and org-clock-watch-micro-rest-p (zerop (mod org-clock-watch-set-watch-notify-passed-time org-clock-watch-micro-rest-interval)))
+     (call-process "aplay" nil nil nil org-clock-watch-micro-rest-sound)))
 
 ;;;###autoload
 (defun org-clock-watch-toggle (&optional on-off)
