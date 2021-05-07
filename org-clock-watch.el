@@ -33,7 +33,7 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
 (defvar org-clock-watch-timer-id nil "the id of the heading, which is a string")
 
 (defcustom org-clock-watch-micro-rest-p t
-  "The path to a sound file that´s to be played when found no clock is running."
+  "non-nil means will send micro rest alarm, nil will disable it"
   :group 'org-clock-watch
   :type 'boolean)
 
@@ -74,7 +74,7 @@ You can set `org-agenda-custom-commands' with SOME-LETTER
 
 (defcustom org-clock-watch-micro-rest-sound (when load-file-name
                                               (concat (file-name-directory load-file-name)
-                                                      "resources/bell.wav"))
+                                                      "resources/ding.wav"))
   "The path to a sound file that´s to be played when need micro rest."
   :group 'org-clock-watch
   :type 'file)
