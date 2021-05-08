@@ -17,8 +17,8 @@
 
 (defvar org-clock-watch-total-on-time 0 "total time (sec) since turn on watcher")
 
-(defvar org-clock-watch-choose-task-func
-  nil " the function to choose the task
+(defvar org-clock-watch-choose-task-func nil
+  " the function to choose the task
 ")
 
 (defvar org-clock-watch-timer-file-path nil
@@ -117,8 +117,17 @@ such as stretch your body, shake your head every 3 min
 
 (defun org-clock-watch-clock-in-action (id key)
   (cond
+   ((string-equal key "task-back")
+;;; t means switch window back after set task
+    ;;; if you are using fire fox you may happy to switch back to fire fox
+    ;;; after set task
+    (funcall org-clock-watch-choose-task-func
+             t))
    ((string-equal key "task")
-    (funcall org-clock-watch-choose-task-func))
+    (funcall org-clock-watch-choose-task-func
+             nil))
+   ((string-equal key "last")
+    (org-clock-in-last))
    (t (when (string-equal key "manual")
         (shell-command "wmctrl -x -a Emacs")
         (setq key (read-string "effort:" nil nil "60min")))
@@ -144,8 +153,7 @@ such as stretch your body, shake your head every 3 min
     (shell-command "wmctrl -x -a Emacs")
     (org-resolve-clocks))
    (t
-    ;; if already over time, we need first modify effort to total time
-    (org-clock-modify-effort-estimate (org-clock-get-clocked-time))
+    ;; if already over time, we need first modify effort to total time (org-clock-modify-effort-estimate (org-clock-get-clocked-time))
     ;; then add extra time
     (org-clock-modify-effort-estimate key))))
 
@@ -199,9 +207,10 @@ you need to run this function as a timer, in you init file
         (notifications-notify :title "clock in?"
                               :urgency 'normal
                               :app-icon org-clock-watch-no-set-me-icon
-                              :actions '("manual" "manual" "task" "task" "30min" "30min"
-                                         "45min" "45min" "60mim" "60min" "90min" "90mim"
-                                         "120min" "120min"):on-action'org-clock-watch-clock-in-action
+                              :actions '("manual" "manual" "last" "last" "task" "task"
+                                         "task-back" "task->" "30min" "30min" "45min"
+                                         "45min" "60mim" "60min" "90min" "90mim" "120min"
+                                         "120min"):on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
                               :timeout 10000)
         (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)))
