@@ -143,7 +143,11 @@ such as stretch your body, shake your head every 3 min
    ((string-equal key "resolve")
     (shell-command "wmctrl -x -a Emacs")
     (org-resolve-clocks))
-   (t (org-clock-modify-effort-estimate key))))
+   (t
+    ;; if already over time, we need first modify effort to total time
+    (org-clock-modify-effort-estimate (org-clock-get-clocked-time))
+    ;; then add extra time
+    (org-clock-modify-effort-estimate key))))
 
 (defun org-clock-watcher ()
   "To watch org-clock status, if `org-clocking-p' is t and not set org-clock-watch,
