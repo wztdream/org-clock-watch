@@ -118,7 +118,7 @@ such as stretch your body, shake your head every 3 min
 (defun org-clock-watch-clock-in-action (id key)
   (cond
    ((string-equal key "task-back")
-;;; t means switch window back after set task
+    ;;; t means switch window back after set task
     ;;; if you are using fire fox you may happy to switch back to fire fox
     ;;; after set task
     (funcall org-clock-watch-choose-task-func
@@ -211,7 +211,8 @@ you need to run this function as a timer, in you init file
                               :actions '("manual" "manual" "last" "last" "task" "task"
                                          "task-back" "task->" "30min" "30min" "45min"
                                          "45min" "60mim" "60min" "90min" "90mim" "120min"
-                                         "120min"):on-action'org-clock-watch-clock-in-action
+                                         "120min")
+                              :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
                               :timeout 10000)
         (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)))
