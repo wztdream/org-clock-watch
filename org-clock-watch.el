@@ -210,7 +210,7 @@ you need to run this function as a timer, in you init file
                               :app-icon org-clock-watch-no-set-me-icon
                               :actions '("manual" "manual" "last" "last" "task" "task"
                                          "task-back" "task->" "30min" "30min" "45min"
-                                         "45min" "60mim" "60min" "90min" "90mim" "120min"
+                                         "45min" "60min" "60min" "90min" "90mim" "120min"
                                          "120min")
                               :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
