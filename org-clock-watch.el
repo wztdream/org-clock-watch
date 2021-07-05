@@ -186,7 +186,7 @@ you need to run this function as a timer, in you init file
                            (shell-command "wmctrl -x -a Emacs")
                            (org-set-effort))))
           ;; update over time
-          (when org-clock-effort
+          (unless (or (null org-clock-effort) (equal org-clock-effort ""))
             (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time))
                                                 (* 60
                                                    (org-duration-to-minutes org-clock-effort)))))
