@@ -25,6 +25,11 @@
   "the file path for timer, which is an org file path")
 (defvar org-clock-watch-timer-id nil "the id of the heading, which is a string")
 
+(defcustom org-clock-watch-play-sound-fn-name
+  "aplay" "shell command name for play the sound file"
+  :group 'org-clock-watch
+  :type 'string)
+
 (defcustom org-clock-watch-micro-rest-p t
   "non-nil means will send micro rest alarm, nil will disable it"
   :group 'org-clock-watch
@@ -179,7 +184,7 @@ you need to run this function as a timer, in you init file
                                   :urgency 'normal
                                   :app-icon org-clock-watch-no-set-me-icon
                                   :timeout 10000)
-            (call-process "aplay" nil nil nil org-clock-watch-effort-sound)
+            (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-effort-sound)
             (run-at-time nil
                          nil
                          (lambda nil
@@ -202,7 +207,7 @@ you need to run this function as a timer, in you init file
                                   :on-action 'org-clock-watch-overtime-action
                                   :app-icon org-clock-watch-overtime-icon
                                   :timeout 10000)
-            (call-process "aplay" nil nil nil org-clock-watch-overtime-notify-sound)))
+            (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-overtime-notify-sound)))
       ;; actions to take when org-clock is not running
       ;; notify to clock in
       (when (zerop (mod org-clock-watch-total-on-time org-clock-watch-clock-in-notify-interval))
@@ -216,11 +221,11 @@ you need to run this function as a timer, in you init file
                               :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
                               :timeout 10000)
-        (call-process "aplay" nil nil nil org-clock-watch-clock-in-sound)))
+        (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-clock-in-sound)))
     ;; periodically sent micro rest alarm when system not idle
     (when (and org-clock-watch-micro-rest-p
                (zerop (mod org-clock-watch-total-on-time org-clock-watch-micro-rest-interval)))
-      (call-process "aplay" nil nil nil org-clock-watch-micro-rest-sound))))
+      (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-micro-rest-sound))))
 
 
 ;;;###autoload
