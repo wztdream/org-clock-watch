@@ -33,7 +33,7 @@
 "shell command string to focus emacs window, nil means this function is off,
 on linux you can use `wmctrl -xa Emacs', on windows you can reference `nircmd' or other command
 "
-  :Emacs 'org-clock-watch
+  :group 'org-clock-watch
   :type 'string)
 
 (defcustom org-clock-watch-micro-rest-p t
