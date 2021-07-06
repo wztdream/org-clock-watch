@@ -36,7 +36,7 @@ on linux you can use `wmctrl -xa Emacs', on windows you can reference `nircmd' o
   :group 'org-clock-watch
   :type 'string)
 
-(defcustom org-clock-watch-micro-rest-p t
+(defcustom org-clock-watch-micro-rest-p nil
   "non-nil means will send micro rest alarm, nil will disable it"
   :group 'org-clock-watch
   :type 'boolean)
