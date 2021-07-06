@@ -25,9 +25,15 @@
   "the file path for timer, which is an org file path")
 (defvar org-clock-watch-timer-id nil "the id of the heading, which is a string")
 
-(defcustom org-clock-watch-play-sound-fn-name
+(defcustom org-clock-watch-play-sound-command-str
   "aplay" "shell command name for play the sound file"
   :group 'org-clock-watch
+  :type 'string)
+(defcustom org-clock-watch-focus-emacs-window-command-str nil
+"shell command string to focus emacs window, nil means this function is off,
+on linux you can use `wmctrl -xa Emacs', on windows you can reference `nircmd' or other command
+"
+  :Emacs 'org-clock-watch
   :type 'string)
 
 (defcustom org-clock-watch-micro-rest-p t
@@ -117,7 +123,8 @@ such as stretch your body, shake your head every 3 min
 (defun org-clock-watch-goto-work-plan ()
   "open work plan org file"
   (interactive)
-  (shell-command "wmctrl -x -a Emacs")
+  (unless org-clock-watch-focus-emacs-window-command-str
+    (shell-command org-clock-watch-focus-emacs-window-command-str))
   (find-file org-clock-watch-work-plan-file-path))
 
 (defun org-clock-watch-clock-in-action (id key)
@@ -134,7 +141,8 @@ such as stretch your body, shake your head every 3 min
    ((string-equal key "last")
     (org-clock-in-last))
    (t (when (string-equal key "manual")
-        (shell-command "wmctrl -x -a Emacs")
+        (unless org-clock-watch-focus-emacs-window-command-str
+          (shell-command org-clock-watch-focus-emacs-window-command-str))
         (setq key (read-string "effort:" nil nil "60min")))
       ;; start clock and set effort
       (org-clock-watch-start-heading-clock org-clock-watch-timer-id
@@ -152,10 +160,12 @@ such as stretch your body, shake your head every 3 min
    ((string-equal key "ok")
     (org-clock-out))
    ((string-equal key "show")
-    (shell-command "wmctrl -x -a Emacs")
+    (unless org-clock-watch-focus-emacs-window-command-str
+      (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-clock-goto))
    ((string-equal key "resolve")
-    (shell-command "wmctrl -x -a Emacs")
+    (unless org-clock-watch-focus-emacs-window-command-str
+      (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-resolve-clocks))
    (t
     ; if already over time, we need first modify effort to total time
@@ -184,11 +194,12 @@ you need to run this function as a timer, in you init file
                                   :urgency 'normal
                                   :app-icon org-clock-watch-no-set-me-icon
                                   :timeout 10000)
-            (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-effort-sound)
+            (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-effort-sound)
             (run-at-time nil
                          nil
                          (lambda nil
-                           (shell-command "wmctrl -x -a Emacs")
+                           (unless org-clock-watch-focus-emacs-window-command-str
+      (shell-command org-clock-watch-focus-emacs-window-command-str))
                            (org-set-effort))))
           ;; update over time
           (unless (or (null org-clock-effort) (equal org-clock-effort ""))
@@ -201,13 +212,14 @@ you need to run this function as a timer, in you init file
             (notifications-notify :title org-clock-current-task
                                   :urgency 'normal
                                   :body (format "over time <b> +%s min</b>"
-                                                (floor org-clock-watch-overred-time 60)):actions'("ok" "why not?" "resolve" "resolve" "show"
+                                                (floor org-clock-watch-overred-time 60))
+                                  :actions'("ok" "why not?" "resolve" "resolve" "show"
                                                 "show" "+5min" "+5m" "+10min" "+10m" "+20min"
                                                 "+20m" "+30min" "+30m")
                                   :on-action 'org-clock-watch-overtime-action
                                   :app-icon org-clock-watch-overtime-icon
                                   :timeout 10000)
-            (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-overtime-notify-sound)))
+            (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-overtime-notify-sound)))
       ;; actions to take when org-clock is not running
       ;; notify to clock in
       (when (zerop (mod org-clock-watch-total-on-time org-clock-watch-clock-in-notify-interval))
@@ -221,11 +233,11 @@ you need to run this function as a timer, in you init file
                               :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
                               :timeout 10000)
-        (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-clock-in-sound)))
+        (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-clock-in-sound)))
     ;; periodically sent micro rest alarm when system not idle
     (when (and org-clock-watch-micro-rest-p
                (zerop (mod org-clock-watch-total-on-time org-clock-watch-micro-rest-interval)))
-      (call-process org-clock-watch-play-sound-fn-name nil nil nil org-clock-watch-micro-rest-sound))))
+      (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-micro-rest-sound))))
 
 
 ;;;###autoload
