@@ -29,8 +29,8 @@
   "aplay" "shell command name for play the sound file"
   :group 'org-clock-watch
   :type 'string)
-(defcustom org-clock-watch-focus-emacs-window-command-str nil
-"shell command string to focus emacs window, nil means this function is off,
+(defcustom org-clock-watch-focus-emacs-window-command-str ""
+"shell command string to focus emacs window, empty string means this function is off,
 on linux you can use `wmctrl -xa Emacs', on windows you can reference `nircmd' or other command
 "
   :group 'org-clock-watch
@@ -123,7 +123,7 @@ such as stretch your body, shake your head every 3 min
 (defun org-clock-watch-goto-work-plan ()
   "open work plan org file"
   (interactive)
-  (unless org-clock-watch-focus-emacs-window-command-str
+  (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
     (shell-command org-clock-watch-focus-emacs-window-command-str))
   (find-file org-clock-watch-work-plan-file-path))
 
@@ -141,7 +141,7 @@ such as stretch your body, shake your head every 3 min
    ((string-equal key "last")
     (org-clock-in-last))
    (t (when (string-equal key "manual")
-        (unless org-clock-watch-focus-emacs-window-command-str
+        (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
           (shell-command org-clock-watch-focus-emacs-window-command-str))
         (setq key (read-string "effort:" nil nil "60min")))
       ;; start clock and set effort
@@ -160,11 +160,11 @@ such as stretch your body, shake your head every 3 min
    ((string-equal key "ok")
     (org-clock-out))
    ((string-equal key "show")
-    (unless org-clock-watch-focus-emacs-window-command-str
+    (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
       (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-clock-goto))
    ((string-equal key "resolve")
-    (unless org-clock-watch-focus-emacs-window-command-str
+    (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
       (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-resolve-clocks))
    (t
@@ -198,7 +198,7 @@ you need to run this function as a timer, in you init file
             (run-at-time nil
                          nil
                          (lambda nil
-                           (unless org-clock-watch-focus-emacs-window-command-str
+                           (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
       (shell-command org-clock-watch-focus-emacs-window-command-str))
                            (org-set-effort))))
           ;; update over time
