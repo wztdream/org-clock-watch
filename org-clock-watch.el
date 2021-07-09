@@ -23,7 +23,14 @@
 
 (defvar org-clock-watch-timer-file-path nil
   "the file path for timer, which is an org file path")
+
 (defvar org-clock-watch-timer-id nil "the id of the heading, which is a string")
+
+(defcustom org-clock-watch-auto-clock-in-p nil
+  "non-nil will clock in the task defined by `org-clock-watch-timer-file-path' and
+`org-clock-watch-timer-id' if there is no action from user, nil will turn off this function"
+  :group 'org-clock-watch
+  :type 'boolean)
 
 (defcustom org-clock-watch-play-sound-command-str
   "aplay" "shell command name for play the sound file"
@@ -151,7 +158,7 @@ such as stretch your body, shake your head every 3 min
 (defun org-clock-watch-clock-in-close (id reason)
   ;; start clock and set effort, here we set effort to nil
   ;; to allow auto clock with old effort in the task entry
-  (when (equal reason 'expired)
+  (when (and (equal reason 'expired) org-clock-watch-auto-clock-in-p)
     (org-clock-watch-start-heading-clock org-clock-watch-timer-id
                                          org-clock-watch-timer-file-path nil)))
 
