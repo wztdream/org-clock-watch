@@ -199,7 +199,7 @@ you need to run this function as a timer, in you init file
   (setq org-clock-watch-total-on-time (1+ org-clock-watch-total-on-time))
   ;; auto clock out if system idle over threshold
   (when (and (org-clocking-p) org-clock-watch-auto-clock-out-p (> (org-x11-idle-seconds) org-clock-watch-auto-clock-out-seconds))
-    (org-clock-out)
+    (ignore-errors (org-clock-out))
     (message "org-clock-watch: auto clock out due to idle")
     )
   ;; only alarm when not idle
