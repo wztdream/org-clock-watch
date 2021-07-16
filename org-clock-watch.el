@@ -198,10 +198,11 @@ you need to run this function as a timer, in you init file
   ;; tic-toc
   (setq org-clock-watch-total-on-time (1+ org-clock-watch-total-on-time))
   ;; auto clock out if system idle over threshold
-  (when (and (org-clocking-p) org-clock-watch-auto-clock-out-p (> (org-x11-idle-seconds) org-clock-watch-auto-clock-out-seconds))
-    (ignore-errors (org-clock-out))
-    (message "org-clock-watch: auto clock out due to idle")
-    )
+  (when (and (org-clocking-p)
+             org-clock-watch-auto-clock-out-p
+             (> (org-x11-idle-seconds) org-clock-watch-auto-clock-out-seconds))
+    (ignore-errors (org-clock-out nil t (time-subtract (current-time) (org-x11-idle-seconds))))
+    (message "org-clock-watch: auto clock out due to idle"))
   ;; only alarm when not idle
   (when (< (org-x11-idle-seconds) (* 60
                                      (org-duration-to-minutes org-clock-watch-idle-threshold-minutes)))
