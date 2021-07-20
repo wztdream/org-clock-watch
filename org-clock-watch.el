@@ -1,5 +1,5 @@
 ;; Author: zongtao wang <wztdream@163.com>
-;; Package-Requires: ((org) (org-clock) (notifications))
+;; Package-Requires: ((org) (notifications))
 
 ;;; Code:
 
