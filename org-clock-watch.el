@@ -12,7 +12,7 @@
 (defvar org-clock-watch-overred-time 0 "over time value")
 
 (defvar org-clock-watch-work-plan-file-path
-  nil "The the work plan org file path .")
+  nil "the work plan org file path .")
 
 
 (defvar org-clock-watch-total-on-time 0 "total time (sec) since turn on watcher")
@@ -47,7 +47,7 @@ the idle time is calculate by `org-clock-x11idle-program-name'"
   :group 'org-clock-watch
   :type 'string)
 (defcustom org-clock-watch-focus-emacs-window-command-str ""
-"shell command string to focus emacs window, empty string means this function is off,
+  "shell command string to focus emacs window, empty string means this function is off,
 on linux you can use `wmctrl -xa Emacs', on windows you can reference `nircmd' or other command
 "
   :group 'org-clock-watch
@@ -185,7 +185,7 @@ such as stretch your body, shake your head every 3 min
       (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-resolve-clocks))
    (t
-    ; if already over time, we need first modify effort to total time
+                                        ; if already over time, we need first modify effort to total time
     (org-clock-modify-effort-estimate (org-clock-get-clocked-time))
     ;; then add extra time
     (org-clock-modify-effort-estimate key))))
@@ -204,8 +204,7 @@ you need to run this function as a timer, in you init file
     (ignore-errors (org-clock-out nil t (time-subtract (current-time) (org-x11-idle-seconds))))
     (message "org-clock-watch: auto clock out due to idle"))
   ;; only alarm when not idle
-  (when (< (org-x11-idle-seconds) (* 60
-                                     (org-duration-to-minutes org-clock-watch-idle-threshold-minutes)))
+  (when (< (org-x11-idle-seconds) (* 60 (org-duration-to-minutes org-clock-watch-idle-threshold-minutes)))
     (if (org-clocking-p)
         ;; org-clock is running
         (progn
@@ -222,13 +221,13 @@ you need to run this function as a timer, in you init file
                          nil
                          (lambda nil
                            (unless (string= "" org-clock-watch-focus-emacs-window-command-str)
-      (shell-command org-clock-watch-focus-emacs-window-command-str))
+                             (shell-command org-clock-watch-focus-emacs-window-command-str))
                            (org-set-effort))))
           ;; update over time
           (unless (or (null org-clock-effort) (equal org-clock-effort ""))
             (setq org-clock-watch-overred-time (- (org-time-convert-to-integer (org-time-since org-clock-start-time))
-                                                (* 60
-                                                   (org-duration-to-minutes org-clock-effort)))))
+                                                  (* 60
+                                                     (org-duration-to-minutes org-clock-effort)))))
           ;; overtime alarm
           (when (and (> org-clock-watch-overred-time 0)
                      (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
@@ -237,8 +236,8 @@ you need to run this function as a timer, in you init file
                                   :body (format "over time <b> +%s min</b>"
                                                 (floor org-clock-watch-overred-time 60))
                                   :actions'("ok" "why not?" "resolve" "resolve" "show"
-                                                "show" "+5min" "+5m" "+10min" "+10m" "+20min"
-                                                "+20m" "+30min" "+30m")
+                                            "show" "+5min" "+5m" "+10min" "+10m" "+20min"
+                                            "+20m" "+30min" "+30m")
                                   :on-action 'org-clock-watch-overtime-action
                                   :app-icon org-clock-watch-overtime-icon
                                   :timeout 10000)
