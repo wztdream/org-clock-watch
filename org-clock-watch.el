@@ -26,6 +26,12 @@
 
 (defvar org-clock-watch-timer-id nil "the id of the heading, which is a string")
 
+(defcustom org-clock-watch-nopop nil
+  "not show pop up window if t, else show popup window"
+  :group 'org-clock-watch
+  :type 'boolean
+  )
+
 (defcustom org-clock-watch-auto-clock-in-p nil
   "non-nil will clock in the task defined by `org-clock-watch-timer-file-path' and
 `org-clock-watch-timer-id' if there is no action from user, nil will turn off this function"
@@ -212,10 +218,11 @@ you need to run this function as a timer, in you init file
           (when (and (or (null org-clock-effort)
                          (equal org-clock-effort ""))
                      (zerop (mod org-clock-watch-total-on-time org-clock-watch-effort-notify-interval)))
-            (notifications-notify :title "Set an effort?"
+            (unless org-clock-watch-nopop
+              (notifications-notify :title "Set an effort?"
                                   :urgency 'normal
                                   :app-icon org-clock-watch-no-set-me-icon
-                                  :timeout 10000)
+                                  :timeout 10000))
             (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-effort-sound)
             (run-at-time nil
                          nil
@@ -231,21 +238,23 @@ you need to run this function as a timer, in you init file
           ;; overtime alarm
           (when (and (> org-clock-watch-overred-time 0)
                      (zerop (mod org-clock-watch-overred-time org-clock-watch-overtime-notify-interval)))
-            (notifications-notify :title org-clock-current-task
-                                  :urgency 'normal
-                                  :body (format "over time <b> +%s min</b>"
-                                                (floor org-clock-watch-overred-time 60))
-                                  :actions'("ok" "why not?" "resolve" "resolve" "show"
-                                            "show" "+5min" "+5m" "+10min" "+10m" "+20min"
-                                            "+20m" "+30min" "+30m")
-                                  :on-action 'org-clock-watch-overtime-action
-                                  :app-icon org-clock-watch-overtime-icon
-                                  :timeout 10000)
+            (unless org-clock-watch-nopop
+                (notifications-notify :title org-clock-current-task
+                                   :urgency 'normal
+                                   :body (format "over time <b> +%s min</b>"
+                                                 (floor org-clock-watch-overred-time 60))
+                                   :actions '("ok" "why not?" "resolve" "resolve" "show"
+                                              "show" "+5min" "+5m" "+10min" "+10m" "+20min"
+                                              "+20m" "+30min" "+30m")
+                                   :on-action 'org-clock-watch-overtime-action
+                                   :app-icon org-clock-watch-overtime-icon
+                                   :timeout 10000))
             (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-overtime-notify-sound)))
       ;; actions to take when org-clock is not running
       ;; notify to clock in
       (when (zerop (mod org-clock-watch-total-on-time org-clock-watch-clock-in-notify-interval))
-        (notifications-notify :title "clock in?"
+        (unless org-clock-watch-nopop
+          (notifications-notify :title "clock in?"
                               :urgency 'normal
                               :app-icon org-clock-watch-no-set-me-icon
                               :actions '("manual" "manual" "last" "last" "task" "task"
@@ -254,7 +263,7 @@ you need to run this function as a timer, in you init file
                                          "120min")
                               :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
-                              :timeout 10000)
+                              :timeout 10000))
         (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-clock-in-sound)))
     ;; periodically sent micro rest alarm when system not idle
     (when (and org-clock-watch-micro-rest-p
