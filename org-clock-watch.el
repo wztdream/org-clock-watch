@@ -223,7 +223,7 @@ you need to run this function as a timer, in you init file
                                   :urgency 'normal
                                   :app-icon org-clock-watch-no-set-me-icon
                                   :timeout 10000))
-            (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-effort-sound)
+            (start-process "play sound" nil org-clock-watch-play-sound-command-str org-clock-watch-effort-sound)
             (run-at-time nil
                          nil
                          (lambda nil
@@ -249,7 +249,7 @@ you need to run this function as a timer, in you init file
                                    :on-action 'org-clock-watch-overtime-action
                                    :app-icon org-clock-watch-overtime-icon
                                    :timeout 10000))
-            (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-overtime-notify-sound)))
+            (start-process "play sound" nil org-clock-watch-play-sound-command-str org-clock-watch-overtime-notify-sound)))
       ;; actions to take when org-clock is not running
       ;; notify to clock in
       (when (zerop (mod org-clock-watch-total-on-time org-clock-watch-clock-in-notify-interval))
@@ -264,11 +264,11 @@ you need to run this function as a timer, in you init file
                               :on-action'org-clock-watch-clock-in-action
                               :on-close 'org-clock-watch-clock-in-close
                               :timeout 10000))
-        (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-clock-in-sound)))
+        (start-process "play sound" nil org-clock-watch-play-sound-command-str org-clock-watch-clock-in-sound)))
     ;; periodically sent micro rest alarm when system not idle
     (when (and org-clock-watch-micro-rest-p
                (zerop (mod org-clock-watch-total-on-time org-clock-watch-micro-rest-interval)))
-      (call-process org-clock-watch-play-sound-command-str nil nil nil org-clock-watch-micro-rest-sound))))
+      (start-process "play sound" nil org-clock-watch-play-sound-command-str org-clock-watch-micro-rest-sound))))
 
 
 ;;;###autoload
