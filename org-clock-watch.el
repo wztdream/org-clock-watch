@@ -191,7 +191,7 @@ such as stretch your body, shake your head every 3 min
       (shell-command org-clock-watch-focus-emacs-window-command-str))
     (org-resolve-clocks))
    (t
-                                        ; if already over time, we need first modify effort to total time
+    ;; as we already over time, we need first modify effort to total time
     (org-clock-modify-effort-estimate (org-clock-get-clocked-time))
     ;; then add extra time
     (org-clock-modify-effort-estimate key))))
@@ -243,9 +243,7 @@ you need to run this function as a timer, in you init file
                                    :urgency 'normal
                                    :body (format "over time <b> +%s min</b>"
                                                  (floor org-clock-watch-overred-time 60))
-                                   :actions '("ok" "why not?" "resolve" "resolve" "show"
-                                              "show" "+5min" "+5m" "+10min" "+10m" "+20min"
-                                              "+20m" "+30min" "+30m")
+                                   :actions '("ok" "why not?"  "+5min" "+5m" "+10min" "+10m" "+20min" "+20m" "+30min" "+30m" "resolve" "resolve" "show" "show")
                                    :on-action 'org-clock-watch-overtime-action
                                    :app-icon org-clock-watch-overtime-icon
                                    :timeout 10000))
